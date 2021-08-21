@@ -1,9 +1,12 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:hangout/auth/sign_up.dart';
+import 'package:hangout/models/user_model.dart';
+import 'package:hangout/shared/constant.dart';
+import 'package:hangout/shared/dialog.dart';
 import 'package:hangout/shared/font.dart';
-import 'package:hexcolor/hexcolor.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({Key? key}) : super(key: key);
@@ -30,7 +33,7 @@ class _SignInState extends State<SignIn> {
               height: 10,
             ),
             Container(
-              alignment: Alignment.centerLeft,
+              alignment: Alignment.centerLeft,  
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
@@ -53,7 +56,7 @@ class _SignInState extends State<SignIn> {
                 decoration: InputDecoration(
                   border: InputBorder.none,
                   hintText: 'Enter Your Email',
-                  hintStyle: TextStyle(color: Colors.grey),
+                  hintStyle: MyFont().grey,
                   contentPadding: EdgeInsets.only(top: 14.0),
                   prefixIcon: Icon(Icons.alternate_email_outlined,color: Colors.black,),
                 ),
@@ -94,6 +97,7 @@ class _SignInState extends State<SignIn> {
           ),
           height: 50,
           child: TextField(
+            
             onChanged: (val) {
               setState(() => password = val.trim());
             },
@@ -102,9 +106,10 @@ class _SignInState extends State<SignIn> {
               color: Color(0xFF162447),
             ),
             decoration: InputDecoration(
+              
               border: InputBorder.none,
               hintText: 'Password',
-              hintStyle: TextStyle(color: Colors.grey),
+              hintStyle: MyFont().grey,
               contentPadding: EdgeInsets.only(top: 14.0),
               prefixIcon: Icon(
                 Icons.lock,
@@ -123,16 +128,16 @@ class _SignInState extends State<SignIn> {
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () async {
-          if (email.isEmpty || password.isEmpty) {
-            //myAlert('แจ้งเตือน', 'กรุณาใส่ email และ password');
+          if (email.isNotEmpty || password.isNotEmpty) {
+            checkAuth(email, password);
           } else {
-            //checkAuthen();
-            print(email);
+            MyDialog().failDialog(context, 'Heyy !!', 'กรุณาใส่ email และ password');
+            
           }
         },
         child: Text('LOGIN',style: MyFont().white,),
         style: ElevatedButton.styleFrom(
-            primary: Color(0xFFE43F5A),
+            primary: MyConstant.focus,
             fixedSize: Size(300, 50),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10))),
@@ -143,8 +148,7 @@ class _SignInState extends State<SignIn> {
   Widget _buildSignUp() {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => SignUp()));
+        Navigator.pushNamed(context, MyConstant.rountSignUp);
       },
       child: RichText(
         text: TextSpan(
@@ -163,71 +167,124 @@ class _SignInState extends State<SignIn> {
     );
   }
 
+  Future<Null> checkAuth (String? email, String? password) async {
+
+    String path = '${MyConstant.domain}/hangout/getUserWhereEmail.php?isAdd=true&email=$email';
+    await Dio().get(path).then((value) {
+
+      //print('value >>> $value');
+      
+      if (value.toString() == 'null') {
+        MyDialog().failDialog(context, 'Oops !', 'กรุณาสมัครสมาชิคค่ะ');
+
+      } else {
+
+        for (var item in json.decode(value.data)) {
+          UserModel model = UserModel.fromMap(item);
+          
+          if ( model.password == password ) {
+            //Success
+            String type = model.chooseType;
+            checkType(type);
+            
+          } else {
+            //Fail
+            MyDialog().failDialog(context, 'Opps !', 'Password ไม่ถูกต้อง กรุณาลองใหม่อีกครั้งค่ะ');
+          }
+        }
+        
+      }
+    });
+  }
+
+  Future<Null> checkType (String? type) async {
+    switch (type) {
+      case 'User':
+      Navigator.pushNamedAndRemoveUntil(context, MyConstant.rountUserMain, (route) => false);
+        
+      break;
+
+      case'Store':
+      Navigator.pushNamedAndRemoveUntil(context, MyConstant.rountAdminMain, (route) => false);
+
+      break;
+
+      default:
+    }
+  }
+  
+
   @override
   Widget build(BuildContext context) {
+
+    double size = MediaQuery.of(context).size.width;
+
     return Scaffold(
-      backgroundColor: HexColor('#181818'),
-      body: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.light,
-        child: Form(
-          key: formKey,
-          child: Stack(
-            children: <Widget>[
-              Container(
-                height: double.infinity,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                    /*image:
-                            DecorationImage(image: AssetImage('') //ใส้พื้นหลัง
-                                ),*/
+      backgroundColor: MyConstant.primary,
+      body: GestureDetector( //แทบตรงไหนก็ได้คีย์บอร์ดจะลง
+        onTap: () => FocusScope.of(context).requestFocus(FocusNode()), 
+        child: AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle.light,
+          child: Form(
+            key: formKey,
+            child: Stack(
+              children: <Widget>[
+                Container(
+                  height: double.infinity,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                      /*image:
+                              DecorationImage(image: AssetImage('') //ใส้พื้นหลัง
+                                  ),*/
+                      ),
+                ),
+                Container(
+                  height: double.infinity,
+                  child: SingleChildScrollView(
+                    physics: AlwaysScrollableScrollPhysics(),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 40.0,
+                      vertical: 100.0,
                     ),
-              ),
-              Container(
-                height: double.infinity,
-                child: SingleChildScrollView(
-                  physics: AlwaysScrollableScrollPhysics(),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 40.0,
-                    vertical: 100.0,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        'hangout',
-                        style: MyFont().white35
-                      ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      _buildEmail(),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      _buildPassword(),
-                      //* _buildForgotPasswordBtn(),
-                      //* _buildRememberMe(),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      _buildLoginBtn(),
-                      //*_buildSignInWithText(),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      //* _buildFacebookLogIn(),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      _buildSignUp(),
-                      SizedBox(
-                        height: 30,
-                      ),
-                    ],
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'hangout',
+                          style: MyFont().white40
+                        ),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        _buildEmail(),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        _buildPassword(),
+                        //* _buildForgotPasswordBtn(),
+                        //* _buildRememberMe(),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        _buildLoginBtn(),
+                        //*_buildSignInWithText(),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        //* _buildFacebookLogIn(),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        _buildSignUp(),
+                        SizedBox(
+                          height: 30,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

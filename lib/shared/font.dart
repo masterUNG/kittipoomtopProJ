@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MyFont {
+  
   Widget tileCenter(String string) {
     return Center(
       child: Text(
@@ -16,10 +17,18 @@ class MyFont {
 
 
 
-  TextStyle white35 = GoogleFonts.prompt(
+  TextStyle white40 = GoogleFonts.prompt(
     textStyle: TextStyle(
       color: Colors.white,
-      fontSize: 35.0,
+      fontSize: 40.0,
+      fontWeight: FontWeight.bold,
+    ),
+  );
+
+  TextStyle black40 = GoogleFonts.prompt(
+    textStyle: TextStyle(
+      color: Colors.black,
+      fontSize: 40.0,
       fontWeight: FontWeight.bold,
     ),
   );

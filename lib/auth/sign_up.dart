@@ -1,9 +1,10 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hangout/shared/constant.dart';
+import 'package:hangout/shared/dialog.dart';
 import 'package:hangout/shared/font.dart';
 import 'package:hexcolor/hexcolor.dart';
-
-enum SingingCharacter { User, Store }
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -13,11 +14,14 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
+  late String verify;
 
-  late String email, password, username, phone, verify, chooseType;
+  String? type;
 
-  SingingCharacter? _character = SingingCharacter.User;
-
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController usernNameController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
 
@@ -29,13 +33,8 @@ class _SignUpState extends State<SignUp> {
           children: <Widget>[
             Container(
               child: TextFormField(
+                controller: emailController,
                 validator: (val) => val!.isEmpty ? 'กรุณาใส่อีเมล' : null,
-                onChanged: (val) {
-                  setState(() => email = val);
-                },
-                onSaved: (String? value) {
-                  email.trim();
-                },
                 keyboardType: TextInputType.emailAddress,
                 style: TextStyle(fontSize: 18, color: Colors.black),
                 decoration: InputDecoration(
@@ -59,13 +58,8 @@ class _SignUpState extends State<SignUp> {
   Widget _buildPassword() {
     return Container(
       child: TextFormField(
+        controller: passwordController,
         validator: (val) => val!.length < 6 ? 'รหัสผ่านต้องมี6ตัวขึ้นไป' : null,
-        onChanged: (val) {
-          setState(() => password = val);
-        },
-        onSaved: (String? value) {
-                  password.trim();
-                },
         obscureText: true,
         style: TextStyle(
           fontSize: 18,
@@ -88,13 +82,8 @@ class _SignUpState extends State<SignUp> {
   Widget _buildUsername() {
     return Container(
       child: TextFormField(
+        controller: usernNameController,
         validator: (val) => val!.isEmpty ? 'กรุณาใส่ username' : null,
-        onChanged: (val) {
-          setState(() => username = val);
-        },
-        onSaved: (String? value) {
-                  username.trim();
-                },
         style: TextStyle(
           fontSize: 18,
           color: HexColor('#0f0f0f'),
@@ -116,13 +105,8 @@ class _SignUpState extends State<SignUp> {
   Widget _buildPhone() {
     return Container(
       child: TextFormField(
+        controller: phoneController,
         validator: (val) => val!.isEmpty ? 'กรุณาใส่หมายเลขโทรศัพท์' : null,
-        onChanged: (val) {
-          setState(() => phone = val);
-        },
-        onSaved: (String? value) {
-                  phone.trim();
-                },
         style: TextStyle(
           fontSize: 18,
           color: HexColor('#0f0f0f'),
@@ -150,11 +134,14 @@ class _SignUpState extends State<SignUp> {
         onPressed: () async {
           if (formKey.currentState!.validate()) {
             formKey.currentState!.save();
-            //checkEmail();
-            print('email : $email\n password : $password\n username : $username\n phone : $phone\n chooseType : $_character');
+            
+            checkEmail();
           }
         },
-        child: Text('Registor',style: MyFont().white,),
+        child: Text(
+          'Registor',
+          style: MyFont().white,
+        ),
         style: ElevatedButton.styleFrom(
             primary: Color(0xFFE43F5A),
             fixedSize: Size(300, 50),
@@ -168,21 +155,17 @@ class _SignUpState extends State<SignUp> {
     return Row(
       children: <Widget>[
         Radio(
-          value: SingingCharacter.User,
-          groupValue: _character,
+          value: 'User',
+          groupValue: type,
           activeColor: HexColor('#0f0f0f'),
-          onChanged: (SingingCharacter? value) {
-              setState(() {
-                _character = value;
-                
-              });
-            },
-          ),
-        
-        Text(
-          'สำหรับจองโต๊ะ',
-          style: MyFont().grey16
+          onChanged: (value) {
+            setState(() {
+              type = value as String?;
+              verify = '';
+            });
+          },
         ),
+        Text('สำหรับจองโต๊ะ', style: MyFont().grey16),
       ],
     );
   }
@@ -191,22 +174,17 @@ class _SignUpState extends State<SignUp> {
     return Row(
       children: <Widget>[
         Radio(
-          value: SingingCharacter.Store,
-          groupValue: _character,
+          value: 'Store',
+          groupValue: type,
           activeColor: HexColor('#0f0f0f'),
-          onChanged: (SingingCharacter? value) {
-              setState(() {
-                _character = value;
-                verify = 'ยังไม่ได้ยืนยัน';
-              });
-            },
-          ),
-        
-
-        Text(
-          'สำหรับร้านอาหาร',
-          style: MyFont().grey16
+          onChanged: (value) {
+            setState(() {
+              type = value as String?;
+              verify = 'ยังไม่ได้ยืนยัน';
+            });
+          },
         ),
+        Text('สำหรับร้านอาหาร', style: MyFont().grey16),
       ],
     );
   }
@@ -219,91 +197,121 @@ class _SignUpState extends State<SignUp> {
       child: RichText(
         text: TextSpan(
           children: [
-            TextSpan(
-              text: 'have an Account? ',
-              style: MyFont().black16
-
-            ),
-            TextSpan(
-              text: 'Sign In',
-              style: MyFont().black16Bold
-            ),
+            TextSpan(text: 'have an Account? ', style: MyFont().black16),
+            TextSpan(text: 'Sign in', style: MyFont().black16Bold),
           ],
         ),
       ),
     );
   }
 
+  Future<Null> checkEmail() async {
+    String email = emailController.text;
+    String password = passwordController.text;
+    String username = usernNameController.text;
+    String phone = phoneController.text;
+    String chooseType = type.toString();
+    String path =
+        '${MyConstant.domain}/hangout/getUserWhereEmail.php?isAdd=true&email=$email';
+    try {
+      Response response = await Dio().get(path);
+      if (response.toString() == 'null') {
+        registerThread(email:email,password: password,username: username,phone: phone,chooseType:chooseType);
+      } else {
+        MyDialog()
+            .failDialog(context, 'ไม่สำเร็จ', '$email นี้มีผู้อื่นใช้ไปแล้ว');
+      }
+    } catch (e) {}
+  }
+
+  Future<Null> registerThread({
+    String? email,
+    String? password,
+    String? username,
+    String? phone,
+    String? chooseType,
+  }) async {
+    String path =
+        '${MyConstant.domain}/hangout/addUser.php?isAdd=true&email=$email&password=$password&username=$username&phone=$phone&chooseType=$chooseType&verify=$verify';
+    await Dio().get(path).then((value) {
+      if (value.toString() == 'true') {
+      Navigator.pop(context);
+      MyDialog().successDialog(context, 'ยินดีด้วย', 'คุณสมัครสมาชิคสำเร็จ');
+      } else {
+        MyDialog()
+            .failDialog(context, 'ไม่สำเร็จ', 'กรุณาลองใหม่อีกครั้งค่ะ');
+      }
+    });
+   
+
+    
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.light,
-        child: Form(
-          key: formKey,
-          child: Stack(
-            children: <Widget>[
-              Container(
-                height: double.infinity,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                    /*image: DecorationImage(image: AssetImage('') //ใส้พื้นหลัง
-                      ),*/
+      backgroundColor: MyConstant.light,
+      body: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+        child: AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle.dark,
+          child: Form(
+            key: formKey,
+            child: Stack(
+              children: <Widget>[
+                Container(
+                  height: double.infinity,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                      /*image: DecorationImage(image: AssetImage('') //ใส้พื้นหลัง
+                        ),*/
+                      ),
+                ),
+                Container(
+                  height: double.infinity,
+                  child: SingleChildScrollView(
+                    physics: AlwaysScrollableScrollPhysics(),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 40.0,
+                      vertical: 100.0,
                     ),
-              ),
-              Container(
-                height: double.infinity,
-                child: SingleChildScrollView(
-                  physics: AlwaysScrollableScrollPhysics(),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 40.0,
-                    vertical: 100.0,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        'Registion',
-                        style: TextStyle(
-                          color: HexColor('#0f0f0f'),
-                          fontSize: 30,
-                          fontFamily: 'Prompt',
-                          fontWeight: FontWeight.bold,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text('ลงทะเบียน', style: MyFont().black40),
+                        SizedBox(
+                          height: 30,
                         ),
-                      ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      _buildEmail(),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      _buildPassword(),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      _buildUsername(),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      _buildPhone(),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      _userRadio(),
-                      _storeRadio(),
-                      _buildReGisBtn(),
-                      _buildSignIn(),
-                      SizedBox(
-                        height: 40,
-                      ),
-                      
-                    ],
+                        _buildEmail(),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        _buildPassword(),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        _buildUsername(),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        _buildPhone(),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        _userRadio(),
+                        _storeRadio(),
+                        _buildReGisBtn(),
+                        _buildSignIn(),
+                        SizedBox(
+                          height: 40,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

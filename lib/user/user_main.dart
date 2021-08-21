@@ -28,6 +28,7 @@ class _UserMainState extends State<UserMain> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        brightness: Brightness.dark,
         title: Text('hangout'),
       ),
       body: _screens[_currentIndex],
@@ -44,25 +45,35 @@ class _UserMainState extends State<UserMain> {
         items: [
           BottomNavigationBarItem(
             icon: Icon(
-              Icons.home,
+              Icons.home_outlined,size: 30.0,
             ),
             title: new Text('หน้าแรก', style: MyFont().white12),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.assistant_rounded),
-            title: new Text('โปรโมชั่น', style: MyFont().white12),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.book_outlined,
+            activeIcon: Icon(
+              Icons.home,size: 30.0,
             ),
-            title: new Text('การจอง', style: MyFont().white12),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.assistant_outlined,size: 30.0,),
+            title: new Text('โปรโมชั่น', style: MyFont().white12),
+            activeIcon: Icon(Icons.assistant,size: 30.0,),
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              Icons.info,
+              Icons.book_outlined,size: 30.0,
+            ),
+            title: new Text('รายการ', style: MyFont().white12),
+            activeIcon: Icon(
+              Icons.book,size: 30.0,
+            ),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.info_outline,size: 30.0,
             ),
             title: new Text('ข้อมูล', style: MyFont().white12),
+            activeIcon: Icon(
+              Icons.info,size: 30.0,
+            ),
           ),
         ].asMap().values.toList(),
       ),
