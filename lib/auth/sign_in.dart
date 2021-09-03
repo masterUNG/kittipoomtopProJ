@@ -7,6 +7,7 @@ import 'package:hangout/models/user_model.dart';
 import 'package:hangout/shared/constant.dart';
 import 'package:hangout/shared/dialog.dart';
 import 'package:hangout/shared/font.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({Key? key}) : super(key: key);
@@ -170,7 +171,7 @@ class _SignInState extends State<SignIn> {
   Future<Null> checkAuth (String? email, String? password) async {
 
     String path = '${MyConstant.domain}/hangout/getUserWhereEmail.php?isAdd=true&email=$email';
-    await Dio().get(path).then((value) {
+    await Dio().get(path).then((value) async {
 
       //print('value >>> $value');
       
@@ -186,6 +187,10 @@ class _SignInState extends State<SignIn> {
             //Success
             String type = model.chooseType;
             checkType(type);
+
+            SharedPreferences preferences = await SharedPreferences.getInstance();
+            preferences.setString('type', type); //ฝังค่าลงไปในpreference
+            preferences.setString('username', model.username);
             
           } else {
             //Fail
@@ -198,6 +203,7 @@ class _SignInState extends State<SignIn> {
   }
 
   Future<Null> checkType (String? type) async {
+    
     switch (type) {
       case 'User':
       Navigator.pushNamedAndRemoveUntil(context, MyConstant.rountUserMain, (route) => false);
@@ -217,7 +223,7 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
 
-    double size = MediaQuery.of(context).size.width;
+    //double size = MediaQuery.of(context).size.width;
 
     return Scaffold(
       backgroundColor: MyConstant.primary,

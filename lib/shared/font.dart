@@ -15,12 +15,18 @@ class MyFont {
     );
   }
 
-
-
   TextStyle white40 = GoogleFonts.prompt(
     textStyle: TextStyle(
       color: Colors.white,
       fontSize: 40.0,
+      fontWeight: FontWeight.bold,
+    ),
+  );
+
+  TextStyle white32 = GoogleFonts.prompt(
+    textStyle: TextStyle(
+      color: Colors.white,
+      fontSize: 32.0,
       fontWeight: FontWeight.bold,
     ),
   );
@@ -97,6 +103,13 @@ class MyFont {
       color: Colors.black,
       fontSize: 16.0,
       fontWeight: FontWeight.bold,
+    ),
+  );
+
+  TextStyle black18 = GoogleFonts.prompt(
+    textStyle: TextStyle(
+      color: Colors.black,
+      fontSize: 18.0
     ),
   );
 

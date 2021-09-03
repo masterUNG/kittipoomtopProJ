@@ -42,6 +42,7 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
     
+	<!-- Image Picker -->
     <key>NSPhotoLibraryUsageDescription</key>
     <string>Need Image for Upload to Server</string>
     <key>NSCameraUsageDescription</key>

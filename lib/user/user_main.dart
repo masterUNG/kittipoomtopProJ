@@ -29,7 +29,7 @@ class _UserMainState extends State<UserMain> {
     return Scaffold(
       appBar: AppBar(
         brightness: Brightness.dark,
-        title: Text('hangout'),
+        title: Text('hangout',style: MyFont().white32),
       ),
       body: _screens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
@@ -47,21 +47,21 @@ class _UserMainState extends State<UserMain> {
             icon: Icon(
               Icons.home_outlined,size: 30.0,
             ),
-            title: new Text('หน้าแรก', style: MyFont().white12),
+            label: 'หน้าแรก',
             activeIcon: Icon(
               Icons.home,size: 30.0,
             ),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.assistant_outlined,size: 30.0,),
-            title: new Text('โปรโมชั่น', style: MyFont().white12),
+            label: 'โปรโมชั่น',
             activeIcon: Icon(Icons.assistant,size: 30.0,),
           ),
           BottomNavigationBarItem(
             icon: Icon(
               Icons.book_outlined,size: 30.0,
             ),
-            title: new Text('รายการ', style: MyFont().white12),
+            label: 'รายการ',
             activeIcon: Icon(
               Icons.book,size: 30.0,
             ),
@@ -70,12 +70,14 @@ class _UserMainState extends State<UserMain> {
             icon: Icon(
               Icons.info_outline,size: 30.0,
             ),
-            title: new Text('ข้อมูล', style: MyFont().white12),
+            label: 'ข้อมูล',
             activeIcon: Icon(
               Icons.info,size: 30.0,
             ),
           ),
         ].asMap().values.toList(),
+        selectedLabelStyle: MyFont().white12,
+        unselectedLabelStyle: MyFont().white12,
       ),
     );
   }

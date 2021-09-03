@@ -6,7 +6,6 @@ import 'package:hangout/admin/admin_promotion.dart';
 import 'package:hangout/admin/admin_table.dart';
 import 'package:hangout/shared/constant.dart';
 import 'package:hangout/shared/font.dart';
-import 'package:hexcolor/hexcolor.dart';
 
 class AdminMain extends StatefulWidget {
   const AdminMain({Key? key}) : super(key: key);
@@ -31,7 +30,7 @@ class _AdminMainState extends State<AdminMain> {
     return Scaffold(
       appBar: AppBar(
         brightness: Brightness.dark,
-        title: Text('hangout'),
+        title: Text('hangout',style: MyFont().white32,)
       ),
       body: _screens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
@@ -42,7 +41,7 @@ class _AdminMainState extends State<AdminMain> {
         //showSelectedLabels: false,
         //showUnselectedLabels: false,
         selectedItemColor: MyConstant.light,
-        unselectedItemColor: MyConstant.light,
+        unselectedItemColor: Colors.grey,
         elevation: 0.0,
         items: [
           BottomNavigationBarItem(
@@ -50,7 +49,7 @@ class _AdminMainState extends State<AdminMain> {
                 Icons.home_outlined,
                 size: 30.0,
               ),
-              title: new Text('หน้าแรก', style: MyFont().white12),
+              label: 'หน้าแรก',
               activeIcon: Icon(
                 Icons.home,
                 size: 30.0,
@@ -60,7 +59,7 @@ class _AdminMainState extends State<AdminMain> {
                 Icons.design_services_outlined,
                 size: 30.0,
               ),
-              title: new Text('แก้ไขโต๊ะ', style: MyFont().white12),
+              label: 'แก้ไขโต๊ะ',
               activeIcon: Icon(
                 Icons.design_services,
                 size: 30.0,
@@ -70,7 +69,7 @@ class _AdminMainState extends State<AdminMain> {
                 Icons.assistant_outlined,
                 size: 30.0,
               ),
-              title: new Text('เพิ่มโปรโมชั่น', style: MyFont().white12),
+              label: 'เพิ่มโปรโมชั่น',
               activeIcon: Icon(
                 Icons.assistant_rounded,
                 size: 30.0,
@@ -80,12 +79,14 @@ class _AdminMainState extends State<AdminMain> {
                 Icons.info_outline,
                 size: 30.0,
               ),
-              title: new Text('ข้อมูล', style: MyFont().white12),
+              label: 'ข้อมูล',
               activeIcon: Icon(
                 Icons.info,
                 size: 30.0,
               )),
         ].asMap().values.toList(),
+        selectedLabelStyle: MyFont().white12,
+        unselectedLabelStyle: MyFont().white12,
       ),
     );
   }

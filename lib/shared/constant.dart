@@ -15,6 +15,9 @@ class MyConstant {
   static String rountSignUp = '/sign_up';
   static String rountAdminMain = '/adminMain';
   static String rountUserMain = '/userMain';
+  static String rountAddPromotion = '/addPromotion';
+  static String rountAddInfo = '/addInfo';
+  static String rountAddTable = '/addTable';
 
   // Color
   static Color primary = HexColor('171717');

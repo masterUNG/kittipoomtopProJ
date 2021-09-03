@@ -56,6 +56,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "date_picker_timeline",
+      "rootUri": "file:///Users/topkittipoom/.pub-cache/hosted/pub.dartlang.org/date_picker_timeline-1.2.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "dio",
       "rootUri": "file:///Users/topkittipoom/.pub-cache/hosted/pub.dartlang.org/dio-4.0.0",
       "packageUri": "lib/",
@@ -129,7 +135,7 @@
     },
     {
       "name": "image_picker",
-      "rootUri": "file:///Users/topkittipoom/.pub-cache/hosted/pub.dartlang.org/image_picker-0.8.3+2",
+      "rootUri": "file:///Users/topkittipoom/.pub-cache/hosted/pub.dartlang.org/image_picker-0.8.4",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -142,6 +148,12 @@
     {
       "name": "image_picker_platform_interface",
       "rootUri": "file:///Users/topkittipoom/.pub-cache/hosted/pub.dartlang.org/image_picker_platform_interface-2.3.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "intl",
+      "rootUri": "file:///Users/topkittipoom/.pub-cache/hosted/pub.dartlang.org/intl-0.17.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -224,6 +236,42 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "shared_preferences",
+      "rootUri": "file:///Users/topkittipoom/.pub-cache/hosted/pub.dartlang.org/shared_preferences-2.0.7",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "shared_preferences_linux",
+      "rootUri": "file:///Users/topkittipoom/.pub-cache/hosted/pub.dartlang.org/shared_preferences_linux-2.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "shared_preferences_macos",
+      "rootUri": "file:///Users/topkittipoom/.pub-cache/hosted/pub.dartlang.org/shared_preferences_macos-2.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "shared_preferences_platform_interface",
+      "rootUri": "file:///Users/topkittipoom/.pub-cache/hosted/pub.dartlang.org/shared_preferences_platform_interface-2.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "shared_preferences_web",
+      "rootUri": "file:///Users/topkittipoom/.pub-cache/hosted/pub.dartlang.org/shared_preferences_web-2.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "shared_preferences_windows",
+      "rootUri": "file:///Users/topkittipoom/.pub-cache/hosted/pub.dartlang.org/shared_preferences_windows-2.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "sky_engine",
       "rootUri": "file:///Users/topkittipoom/fvm/versions/stable/bin/cache/pkg/sky_engine",
       "packageUri": "lib/",
@@ -296,7 +344,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2021-08-21T08:59:20.196596Z",
+  "generated": "2021-09-03T03:30:52.690369Z",
   "generator": "pub",
   "generatorVersion": "2.13.4"
 }
