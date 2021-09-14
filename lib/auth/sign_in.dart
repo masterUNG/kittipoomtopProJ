@@ -191,6 +191,7 @@ class _SignInState extends State<SignIn> {
             SharedPreferences preferences = await SharedPreferences.getInstance();
             preferences.setString('type', type); //ฝังค่าลงไปในpreference
             preferences.setString('username', model.username);
+            preferences.setString('id', model.id);
             
           } else {
             //Fail

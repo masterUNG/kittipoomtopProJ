@@ -1,8 +1,13 @@
+import 'dart:convert';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:hangout/models/user_model.dart';
 import 'package:hangout/shared/constant.dart';
+import 'package:hangout/shared/dialog.dart';
 import 'package:hangout/shared/font.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddTable extends StatefulWidget {
   const AddTable({Key? key}) : super(key: key);
@@ -12,8 +17,11 @@ class AddTable extends StatefulWidget {
 }
 
 class _AddTableState extends State<AddTable> {
-  
-  String? _timeBooking;
+  UserModel? userModel;
+
+  List<String> numberTable = [];
+
+  String? _timeBooking, nameStore, idStore;
 
   TextEditingController numberController = TextEditingController();
 
@@ -52,7 +60,7 @@ class _AddTableState extends State<AddTable> {
               ),
             ),
           ),
-        )
+        ),
       ],
     );
   }
@@ -89,12 +97,13 @@ class _AddTableState extends State<AddTable> {
       width: size / 2,
       child: ElevatedButton(
         onPressed: () {
-          String number = numberController.text;
-          print('มหายเลขโต๊ะ : $number \n วันที่ $_timeBooking');
+          //String number = numberController.text;
+          print('มหายเลขโต๊ะ : $numberTable \n วันที่ $_timeBooking');
+          _addNumber();
         },
         child: Text(
-          'CONFIRM',
-          style: MyFont().white,
+          'ยืนยัน',
+          style: MyFont().white16,
         ),
         style: ElevatedButton.styleFrom(
             primary: MyConstant.focus,
@@ -105,40 +114,155 @@ class _AddTableState extends State<AddTable> {
     );
   }
 
-  Widget _content() {
-    double size = MediaQuery.of(context).size.width;
+  Widget info() {
     return Container(
-      width: double.infinity,
-      height: double.infinity,
       child: Column(
-        children: <Widget>[
-          _dateCeledar(),
-          SizedBox(
-            height: 20.0,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'วิธีการเพิ่มโต๊ะ',
+            style: MyFont().black18Bold,
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: _tableForm(),
+          Text(
+            '1.เลือกวันที่\n2.พิมพ์หมายเลขโต๊ะ\n3.กด + เพื่อเพิ่มโต๊ะ หรือ กด - เพื่อลบโต๊ะที่ไม่ต้องการ\n4.กดยืนยัน',
+            style: MyFont().black18,
           ),
-          _timeBooking == null
-              ? Text(
-                  'กรุณาเลือกวันที่',
-                  style: MyFont().black18,
-                )
-              : Text(
-                  'วันที่ $_timeBooking',
-                  style: MyFont().black18,
-                ),
-          _confirmBth(size),
         ],
       ),
     );
   }
 
+  Widget _content() {
+    double size = MediaQuery.of(context).size.width;
+    return Container(
+      margin: EdgeInsets.all(10.0),
+      width: double.infinity,
+      height: double.infinity,
+      child: SingleChildScrollView(
+        physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+        child: Column(
+          children: <Widget>[
+            _dateCeledar(),
+            SizedBox(
+              height: 20.0,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: _tableForm(),
+            ),
+            addOrRemove(),
+            _timeBooking == null
+                ? Text(
+                    'กรุณาเลือกวันที่',
+                    style: MyFont().black18,
+                  )
+                : Text(
+                    'วันที่ $_timeBooking',
+                    style: MyFont().black18,
+                  ),
+            SizedBox(
+              height: 10.0,
+            ),
+            numberTable.isEmpty
+                ? Text(
+                    'กรุณาเพิ่มโต๊ะสำหรับให้ลูกค้าจอง',
+                    style: MyFont().black16,
+                  )
+                : Text(
+                    'โต๊ะที่เพิ่ม $numberTable',
+                    style: MyFont().black18,
+                  ),
+            _confirmBth(size),
+            info(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget addOrRemove() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        IconButton(
+            onPressed: () {
+              setState(() {
+                String number = numberController.text;
+                numberTable.add(number);
+              });
+              print(numberTable);
+            },
+            icon: Icon(Icons.add_circle)),
+        IconButton(
+          onPressed: () {
+            setState(() {
+              String number = numberController.text;
+              numberTable.remove(number);
+            });
+            print(numberTable);
+          },
+          icon: Icon(Icons.remove_circle),
+        ),
+      ],
+    );
+  }
+
+  Future<Null> _addNumber() async {
+    if (numberTable.isNotEmpty) {
+      String urlInsertData =
+          '${MyConstant.domain}/hangout/addTable.php?isAdd=true&idStore=$idStore&NameStore=$nameStore&NumberTable=$numberTable&BookingDate=$_timeBooking';
+      await Dio().get(urlInsertData).then((value) {
+        _content();
+        if (value.toString() == 'true') {
+          Navigator.pop(context);
+          MyDialog()
+              .successDialog(context, 'Successfully !!', 'เพิ่มโต๊ะสำเร็จ');
+          //showToast('เพิ่มโต๊ะสำเร็จ โต๊ะ$numberTable');
+        } else {
+          MyDialog().failDialog(context, 'Oops', 'กรุณาลองใหม่อีกครั้งค่ะ');
+        }
+      });
+    } else {
+      MyDialog().failDialog(context, 'Sorry', 'กรุณาใส่ข้อมูล');
+    }
+  }
+
+  Future<Null> find() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String id = preferences.getString('id')!;
+
+    String apiGetInfo =
+        '${MyConstant.domain}/hangout/getUserWhereId.php?isAdd=true&id=$id}';
+    await Dio().get(apiGetInfo).then((value) {
+      if (value.toString() == 'null') {
+        //No Data
+
+      } else {
+        //Have Data
+        for (var item in json.decode(value.data)) {
+          setState(() {
+            userModel = UserModel.fromMap(item);
+            nameStore = userModel!.nameStore;
+            idStore = userModel!.id;
+          });
+        }
+      }
+    });
+    //print(nameStore);
+    //print(idStore);
+  }
+
+  @override
+  void initState() {
+    find();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    double size = MediaQuery.of(context).size.width;
+    //double size = MediaQuery.of(context).size.width;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         brightness: Brightness.dark,
         title: Text(

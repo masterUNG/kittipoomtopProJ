@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+
 class PromotionModel {
   
   String id;
@@ -9,7 +10,7 @@ class PromotionModel {
   String price;
   String detail;
   String imagePromotion;
-
+  
   PromotionModel({
     required this.id,
     required this.idStore,
@@ -19,6 +20,7 @@ class PromotionModel {
     required this.detail,
     required this.imagePromotion,
   });
+  
 
   PromotionModel copyWith({
     String? id,

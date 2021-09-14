@@ -32,6 +32,7 @@ Future<Null> main() async {  //Auto login ถ้าเคย login แล้ว
   if(type?.isEmpty??true) { //เป็น null หรือ isEmpty
     initialRoute = MyConstant.rountSignIn;
     runApp(MyApp());
+    
   } else {
     switch (type) {
       case 'User': 
@@ -46,7 +47,9 @@ Future<Null> main() async {  //Auto login ถ้าเคย login แล้ว
     }
 
   }
+  
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);

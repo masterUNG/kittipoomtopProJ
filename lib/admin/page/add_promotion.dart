@@ -1,10 +1,16 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:hangout/models/user_model.dart';
+import 'package:hangout/shared/dialog.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:hangout/shared/constant.dart';
 import 'package:hangout/shared/font.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddPromotion extends StatefulWidget {
   const AddPromotion({Key? key}) : super(key: key);
@@ -14,15 +20,43 @@ class AddPromotion extends StatefulWidget {
 }
 
 class _AddPromotionState extends State<AddPromotion> {
+
+  UserModel? userModel;
+
   File? image;
   final ImagePicker _picker = ImagePicker();
   final formKey = GlobalKey<FormState>();
+  String? imagePromotion, idStore, nameStore;
+
+  TextEditingController promotionController = TextEditingController();
+  TextEditingController priceController = TextEditingController();
+  TextEditingController detailController = TextEditingController();
+
+  Future<Null> findData() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String id = preferences.getString('id')!;
+    
+    String apiGetInfo =
+        '${MyConstant.domain}/hangout/getUserWhereId.php?isAdd=true&id=$id';
+    await Dio().get(apiGetInfo).then((value) {
+      for (var item in json.decode(value.data)) {
+        setState(() {
+          userModel = UserModel.fromMap(item);
+          nameStore = userModel!.nameStore;
+          idStore = userModel!.id;
+        });
+      }
+    });
+    //print('id >> $idStore');
+    //print('name >> $nameStore');
+  }
 
   Widget _buildPromotion(BoxConstraints constraints) {
     return Container(
       width: constraints.maxWidth * 0.8, //ปรับขนาด
       margin: EdgeInsets.only(top: 16),
       child: TextFormField(
+        controller: promotionController,
         style: MyFont().black18,
         validator: (value) {
           if (value!.isEmpty) {
@@ -63,6 +97,7 @@ class _AddPromotionState extends State<AddPromotion> {
       width: constraints.maxWidth * 0.8, //ปรับขนาด
       margin: EdgeInsets.only(top: 16),
       child: TextFormField(
+        controller: priceController,
         style: MyFont().black18,
         validator: (value) {
           if (value!.isEmpty) {
@@ -102,6 +137,7 @@ class _AddPromotionState extends State<AddPromotion> {
       width: constraints.maxWidth * 0.8, //ปรับขนาด
       margin: EdgeInsets.only(top: 16),
       child: TextFormField(
+        controller: detailController,
         maxLines: 4,
         style: MyFont().black18,
         validator: (value) {
@@ -179,9 +215,9 @@ class _AddPromotionState extends State<AddPromotion> {
       child: ElevatedButton(
         onPressed: () async {
           if (formKey.currentState!.validate()) {
+            addPromotion();
           } else {
-            //MyDialog().failDialog(context, 'Heyy !!', 'กรุณาใส่ email และ password');
-
+          
           }
         },
         child: Text(
@@ -211,6 +247,50 @@ class _AddPromotionState extends State<AddPromotion> {
     }
   }
 
+  Future<Null> addPromotion() async {
+    Random random = Random();
+    int i = random.nextInt(1000000);
+    String nameImage = 'promotion$i.jpg';
+    String url = '${MyConstant.domain}/hangout/saveImagePromotion.php';
+
+    try {
+      Map<String, dynamic> map = Map();
+
+      map['file'] = await MultipartFile.fromFile(image!.path,
+          filename: nameImage); //ชื่อตัวแปลต้องตรงกับ PHP
+
+      FormData formData = FormData.fromMap(map);
+      await Dio().post(url, data: formData).then((value) async {
+        imagePromotion = '/hangout/promotion/$nameImage';
+        print('imagePromotion = $imagePromotion');
+        saveAdd();
+      });
+    } catch (e) {}
+  }
+
+  Future<Null> saveAdd() async {
+    String promotion = promotionController.text;
+    String price = priceController.text;
+    String detail = detailController.text;
+
+
+    String urlInsertData =
+        '${MyConstant.domain}/hangout/addPromotion.php?isAdd=true&idStore=$idStore&NameStore=$nameStore&Promotion=$promotion&Price=$price&Detail=$detail&ImagePromotion=$imagePromotion';
+    await Dio().get(urlInsertData).then((value) {
+      if (value.toString() == 'true'){
+        Navigator.pop(context);
+        MyDialog().successDialog(context, 'Successfully!', 'บันทึกข้อมูลสำเร็จ');
+      } else {
+        MyDialog().failDialog(context, 'Opps', 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งค่ะ');
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    findData();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;

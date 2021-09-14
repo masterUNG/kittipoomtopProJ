@@ -112,6 +112,13 @@ class MyFont {
       fontSize: 18.0
     ),
   );
+  TextStyle black18Bold = GoogleFonts.prompt(
+    textStyle: TextStyle(
+      color: Colors.black,
+      fontSize: 18.0,
+      fontWeight: FontWeight.bold,
+    ),
+  );
 
   
 }
