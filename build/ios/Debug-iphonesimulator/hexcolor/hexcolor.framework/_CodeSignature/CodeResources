@@ -10,7 +10,7 @@
 		</data>
 		<key>Headers/hexcolor-Swift.h</key>
 		<data>
-		K4mwuqb9KuB/6objNLIdSmfh6f4=
+		+K0WIsaJusMQFxfUzDRriMjoDNk=
 		</data>
 		<key>Headers/hexcolor-umbrella.h</key>
 		<data>
@@ -18,31 +18,55 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		PUI8wfD0dHrUQfQKrVyVWC3AiUU=
+		wwL2CWiAvwzvuEznfG63r5XGlg0=
+		</data>
+		<key>Modules/hexcolor.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo</key>
+		<data>
+		oketCwpXoeLjYO3r6qDIYSODA00=
+		</data>
+		<key>Modules/hexcolor.swiftmodule/Project/arm64.swiftsourceinfo</key>
+		<data>
+		oketCwpXoeLjYO3r6qDIYSODA00=
 		</data>
 		<key>Modules/hexcolor.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo</key>
 		<data>
-		3jesb1velXii/wT4mVjNdPGEvb8=
+		IB0OhtcfNeS2gq5q76vMYRQ/PYU=
 		</data>
 		<key>Modules/hexcolor.swiftmodule/Project/x86_64.swiftsourceinfo</key>
 		<data>
-		3jesb1velXii/wT4mVjNdPGEvb8=
+		IB0OhtcfNeS2gq5q76vMYRQ/PYU=
+		</data>
+		<key>Modules/hexcolor.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
+		<data>
+		zVZtFQ76afgM+KZkrByLzyP6//I=
+		</data>
+		<key>Modules/hexcolor.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
+		<data>
+		DdQKQClH2LJL+FLbGrHOPycOGE8=
+		</data>
+		<key>Modules/hexcolor.swiftmodule/arm64.swiftdoc</key>
+		<data>
+		zVZtFQ76afgM+KZkrByLzyP6//I=
+		</data>
+		<key>Modules/hexcolor.swiftmodule/arm64.swiftmodule</key>
+		<data>
+		DdQKQClH2LJL+FLbGrHOPycOGE8=
 		</data>
 		<key>Modules/hexcolor.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		Y+O2dIoEtWv5oHMm+qSV4CP/C9U=
+		J6vxnRsrXSo456bksMcZt3m6WwQ=
 		</data>
 		<key>Modules/hexcolor.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		aUTH+KNoCYuGiq+8Mvc+PNMfk0A=
+		VSuzDHO6JyEcXiWuyiANMPX4PA8=
 		</data>
 		<key>Modules/hexcolor.swiftmodule/x86_64.swiftdoc</key>
 		<data>
-		Y+O2dIoEtWv5oHMm+qSV4CP/C9U=
+		J6vxnRsrXSo456bksMcZt3m6WwQ=
 		</data>
 		<key>Modules/hexcolor.swiftmodule/x86_64.swiftmodule</key>
 		<data>
-		aUTH+KNoCYuGiq+8Mvc+PNMfk0A=
+		VSuzDHO6JyEcXiWuyiANMPX4PA8=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -53,10 +77,6 @@
 	<dict>
 		<key>Headers/HexcolorPlugin.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			oREmotbvss6jpbyTN3AhrpiDV8w=
-			</data>
 			<key>hash2</key>
 			<data>
 			WnGo5oIj+UFGCAfkLPmQArMvZlXUj14bS/t3FeIuYvw=
@@ -64,98 +84,104 @@
 		</dict>
 		<key>Headers/hexcolor-Swift.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			K4mwuqb9KuB/6objNLIdSmfh6f4=
-			</data>
 			<key>hash2</key>
 			<data>
-			DOpqfTyG195nXcF81gb4ExOjwxPFR3yM0g2WjfyfAZc=
+			N1gdziTxiqzkJY9pjhxuQfmw0VJ2HRLHR7tW3XGWNg0=
 			</data>
 		</dict>
 		<key>Headers/hexcolor-umbrella.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			BvYHESuAlsj4fRJN3eJmX7xkVG8=
-			</data>
 			<key>hash2</key>
 			<data>
 			oLdH/O89FoCFUm8kPDgVaoBrdunbjXqwpyULkkuubfI=
 			</data>
 		</dict>
-		<key>Modules/hexcolor.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo</key>
+		<key>Modules/hexcolor.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			3jesb1velXii/wT4mVjNdPGEvb8=
-			</data>
 			<key>hash2</key>
 			<data>
-			lARvVydDlWpDGYeduN3z6XEVN5vxGai3sSGAX7JtSYw=
+			UdygDJja3/6PwKf8AeyR8RT5RD/BierOINRmJ0Mqjh4=
+			</data>
+		</dict>
+		<key>Modules/hexcolor.swiftmodule/Project/arm64.swiftsourceinfo</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			UdygDJja3/6PwKf8AeyR8RT5RD/BierOINRmJ0Mqjh4=
+			</data>
+		</dict>
+		<key>Modules/hexcolor.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			9mXCmb0dzN8RktFMI8UoYtQr+iK7ewFFKFCXmfLD+38=
 			</data>
 		</dict>
 		<key>Modules/hexcolor.swiftmodule/Project/x86_64.swiftsourceinfo</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			3jesb1velXii/wT4mVjNdPGEvb8=
-			</data>
 			<key>hash2</key>
 			<data>
-			lARvVydDlWpDGYeduN3z6XEVN5vxGai3sSGAX7JtSYw=
+			9mXCmb0dzN8RktFMI8UoYtQr+iK7ewFFKFCXmfLD+38=
+			</data>
+		</dict>
+		<key>Modules/hexcolor.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			OaiV2qB1S2dH/k86ZpwDwEJUSbNvMdHDJiEBd/fUVsA=
+			</data>
+		</dict>
+		<key>Modules/hexcolor.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			jLnX15gUfFMlc07I/jIa2b7Uxp2VDlBmHdJWBippA+Y=
+			</data>
+		</dict>
+		<key>Modules/hexcolor.swiftmodule/arm64.swiftdoc</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			OaiV2qB1S2dH/k86ZpwDwEJUSbNvMdHDJiEBd/fUVsA=
+			</data>
+		</dict>
+		<key>Modules/hexcolor.swiftmodule/arm64.swiftmodule</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			jLnX15gUfFMlc07I/jIa2b7Uxp2VDlBmHdJWBippA+Y=
 			</data>
 		</dict>
 		<key>Modules/hexcolor.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			Y+O2dIoEtWv5oHMm+qSV4CP/C9U=
-			</data>
 			<key>hash2</key>
 			<data>
-			oUfvBzXZoMzzcLVBD6+oWDkMAdwo8zmLHZMI2Y8uWGk=
+			QwrNVY6PqNw4fB32uS0tfa7SM+OTOIxdb6IYPWakbHQ=
 			</data>
 		</dict>
 		<key>Modules/hexcolor.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			aUTH+KNoCYuGiq+8Mvc+PNMfk0A=
-			</data>
 			<key>hash2</key>
 			<data>
-			2xvocsQRRtW1Pd29V4iwqviZ9wg/JVrx90VvaiePLUY=
+			cpIRREYUOFn6qM8Yb2X6sPnKClUpU3wVPG6TKkVW4GM=
 			</data>
 		</dict>
 		<key>Modules/hexcolor.swiftmodule/x86_64.swiftdoc</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			Y+O2dIoEtWv5oHMm+qSV4CP/C9U=
-			</data>
 			<key>hash2</key>
 			<data>
-			oUfvBzXZoMzzcLVBD6+oWDkMAdwo8zmLHZMI2Y8uWGk=
+			QwrNVY6PqNw4fB32uS0tfa7SM+OTOIxdb6IYPWakbHQ=
 			</data>
 		</dict>
 		<key>Modules/hexcolor.swiftmodule/x86_64.swiftmodule</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			aUTH+KNoCYuGiq+8Mvc+PNMfk0A=
-			</data>
 			<key>hash2</key>
 			<data>
-			2xvocsQRRtW1Pd29V4iwqviZ9wg/JVrx90VvaiePLUY=
+			cpIRREYUOFn6qM8Yb2X6sPnKClUpU3wVPG6TKkVW4GM=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			Q+hpKztQbw4vzrdf6cF7iCUMlKc=
-			</data>
 			<key>hash2</key>
 			<data>
 			5JpnrJFwq98j9Pyx3qPnf6hjn0Cn9Jsu15KtlGiFprI=

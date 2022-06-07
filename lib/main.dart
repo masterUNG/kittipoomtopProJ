@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:hangout/admin/admin_main.dart';
+import 'package:hangout/admin/main/admin_main.dart';
 import 'package:hangout/admin/page/add_info.dart';
 import 'package:hangout/admin/page/add_promotion.dart';
 import 'package:hangout/auth/sign_in.dart';
 import 'package:hangout/auth/sign_up.dart';
 import 'package:hangout/shared/constant.dart';
-import 'package:hangout/user/user_main.dart';
+import 'package:hangout/user/main/user_main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'admin/page/add_table.dart';
 
 final Map<String, WidgetBuilder> map = {

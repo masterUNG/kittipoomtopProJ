@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_animated_button/flutter_animated_button.dart';
 import 'package:hangout/models/user_model.dart';
 import 'package:hangout/shared/constant.dart';
 import 'package:hangout/shared/dialog.dart';
@@ -18,56 +20,18 @@ class AddTable extends StatefulWidget {
 
 class _AddTableState extends State<AddTable> {
   UserModel? userModel;
-
-  List<String> numberTable = [];
-
-  String? _timeBooking, nameStore, idStore;
-
+  String? _timeBooking, nameStore, idStore, numberTable;
   TextEditingController numberController = TextEditingController();
 
   DatePickerController _controller = DatePickerController();
   DateTime _selectedValue = DateTime.now();
 
-  Widget _tableForm() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          width: 280.0,
-          child: TextFormField(
-            controller: numberController,
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: MyConstant.light,
-              hintStyle: MyFont().grey16,
-              hintText: 'หมายเลขโต๊ะ :',
-              hoverColor: Colors.black,
-              prefixIcon: Icon(
-                Icons.add_shopping_cart,
-                color: Colors.black,
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: MyConstant.light),
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: MyConstant.dark),
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-              errorBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.red),
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 
-  Widget _dateCeledar() {
-    String _dateTime = DateFormat('yyyy-MM-dd').format(_selectedValue);
+  Widget _dateCalendar() {
+    setState(() {
+      String _dateTime = DateFormat('yyyy-MM-dd').format(_selectedValue);
     _timeBooking = _dateTime;
+    });
     return Container(
       child: DatePicker(
         DateTime.now(),
@@ -91,49 +55,23 @@ class _AddTableState extends State<AddTable> {
     );
   }
 
-  Widget _confirmBth(double size) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 25),
-      width: size / 2,
-      child: ElevatedButton(
-        onPressed: () {
-          //String number = numberController.text;
-          print('มหายเลขโต๊ะ : $numberTable \n วันที่ $_timeBooking');
-          _addNumber();
-        },
-        child: Text(
-          'ยืนยัน',
-          style: MyFont().white16,
-        ),
-        style: ElevatedButton.styleFrom(
-            primary: MyConstant.focus,
-            fixedSize: Size(300, 50),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10))),
-      ),
-    );
-  }
-
   Widget info() {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'วิธีการเพิ่มโต๊ะ',
-            style: MyFont().black18Bold,
-          ),
-          Text(
-            '1.เลือกวันที่\n2.พิมพ์หมายเลขโต๊ะ\n3.กด + เพื่อเพิ่มโต๊ะ หรือ กด - เพื่อลบโต๊ะที่ไม่ต้องการ\n4.กดยืนยัน',
-            style: MyFont().black18,
-          ),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '',
+          style: MyFont().black18Bold,
+        ),
+        Text(
+          '',
+          style: MyFont().black18,
+        ),
+      ],
     );
   }
 
   Widget _content() {
-    double size = MediaQuery.of(context).size.width;
     return Container(
       margin: EdgeInsets.all(10.0),
       width: double.infinity,
@@ -142,15 +80,58 @@ class _AddTableState extends State<AddTable> {
         physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         child: Column(
           children: <Widget>[
-            _dateCeledar(),
+            _dateCalendar(),
             SizedBox(
               height: 20.0,
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: _tableForm(),
+            Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    btnChair(1, false),
+                    btnChair(2, false),
+                    btnChair(3, false),
+                    btnChair(4, false),
+                    btnChair(5, false),
+                    
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    btnChair(6, false),
+                    btnChair(7, false),
+                    btnChair(8, false),
+                    btnChair(9, false),
+                    btnChair(10, false),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    btnChair(11, false),
+                    btnChair(12, false),
+                    btnChair(13, false),
+                    btnChair(14, false),
+                    btnChair(15, false),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    btnChair(16, false),
+                    btnChair(17, false),
+                    btnChair(18, false),
+                    btnChair(19, false),
+                    btnChair(20, false),
+                  ],
+                ),
+              ],
             ),
-            addOrRemove(),
+            SizedBox(
+              height: 20.0,
+            ),
             _timeBooking == null
                 ? Text(
                     'กรุณาเลือกวันที่',
@@ -163,16 +144,7 @@ class _AddTableState extends State<AddTable> {
             SizedBox(
               height: 10.0,
             ),
-            numberTable.isEmpty
-                ? Text(
-                    'กรุณาเพิ่มโต๊ะสำหรับให้ลูกค้าจอง',
-                    style: MyFont().black16,
-                  )
-                : Text(
-                    'โต๊ะที่เพิ่ม $numberTable',
-                    style: MyFont().black18,
-                  ),
-            _confirmBth(size),
+            //_confirmBth(size),
             info(),
           ],
         ),
@@ -180,51 +152,17 @@ class _AddTableState extends State<AddTable> {
     );
   }
 
-  Widget addOrRemove() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        IconButton(
-            onPressed: () {
-              setState(() {
-                String number = numberController.text;
-                numberTable.add(number);
-              });
-              print(numberTable);
-            },
-            icon: Icon(Icons.add_circle)),
-        IconButton(
-          onPressed: () {
-            setState(() {
-              String number = numberController.text;
-              numberTable.remove(number);
-            });
-            print(numberTable);
-          },
-          icon: Icon(Icons.remove_circle),
-        ),
-      ],
-    );
-  }
-
-  Future<Null> _addNumber() async {
-    if (numberTable.isNotEmpty) {
-      String urlInsertData =
-          '${MyConstant.domain}/hangout/addTable.php?isAdd=true&idStore=$idStore&NameStore=$nameStore&NumberTable=$numberTable&BookingDate=$_timeBooking';
-      await Dio().get(urlInsertData).then((value) {
-        _content();
-        if (value.toString() == 'true') {
-          Navigator.pop(context);
-          MyDialog()
-              .successDialog(context, 'Successfully !!', 'เพิ่มโต๊ะสำเร็จ');
-          //showToast('เพิ่มโต๊ะสำเร็จ โต๊ะ$numberTable');
-        } else {
-          MyDialog().failDialog(context, 'Oops', 'กรุณาลองใหม่อีกครั้งค่ะ');
-        }
-      });
-    } else {
-      MyDialog().failDialog(context, 'Sorry', 'กรุณาใส่ข้อมูล');
-    }
+  Future<Null> _addNumber(int table, bool status) async {
+    String urlInsertData =
+        '${MyConstant.domain}/hangout/addTable.php?isAdd=true&idStore=$idStore&NameStore=$nameStore&NumberTable=$table&BookingDate=$_timeBooking&Status=$status';
+    await Dio().get(urlInsertData).then((value) {
+      if (value.toString() == 'true') {
+        Navigator.pop(context);
+        MyDialog().successDialog(context, 'Successfully !!', 'เพิ่มโต๊ะสำเร็จ');
+      } else {
+        MyDialog().failDialog(context, 'Oops', 'กรุณาลองใหม่อีกครั้งค่ะ');
+      }
+    });
   }
 
   Future<Null> find() async {
@@ -252,6 +190,32 @@ class _AddTableState extends State<AddTable> {
     //print(idStore);
   }
 
+  Widget btnChair(int number, bool status) {
+    return AnimatedButton(
+      height: 40,
+      width: 60,
+      text: '$number',
+      isReverse: true,
+      selectedBackgroundColor: MyConstant.focus,
+      selectedTextColor: Colors.white,
+      transitionType: TransitionType.LEFT_TO_RIGHT,
+      textStyle: MyFont().white16,
+      backgroundColor: MyConstant.primary,
+      borderColor: MyConstant.light,
+      borderRadius: 10,
+      borderWidth: 2,
+      onPress: () {
+        MyDialog().loadingDialog(context);
+        print('หมายเลขโต๊ะ : $number \n วันที่ $_timeBooking');
+        setState(() {
+          status = !status;
+        });
+        print(status);
+        _addNumber(number, status);
+      },
+    );
+  }
+
   @override
   void initState() {
     find();
@@ -264,16 +228,18 @@ class _AddTableState extends State<AddTable> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        brightness: Brightness.dark,
         title: Text(
           'เพิ่มโต๊ะ',
           style: MyFont().white,
         ),
+        systemOverlayStyle: SystemUiOverlayStyle.light,
+        backgroundColor: MyConstant.primary,
       ),
       body: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-          child: _content()),
+        behavior: HitTestBehavior.opaque,
+        onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+        child: _content(),
+      ),
     );
   }
 }

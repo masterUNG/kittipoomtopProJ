@@ -1,9 +1,8 @@
 import 'dart:io';
 import 'dart:math';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:hangout/shared/constant.dart';
 import 'package:hangout/shared/dialog.dart';
 import 'package:hangout/shared/font.dart';
@@ -25,7 +24,7 @@ class _AddInfoState extends State<AddInfo> {
   List<String> paths = [];
 
   final ImagePicker _picker = ImagePicker();
-  
+
   final formKey = GlobalKey<FormState>();
 
   TextEditingController nameController = TextEditingController();
@@ -376,7 +375,7 @@ class _AddInfoState extends State<AddInfo> {
 
           Map<String, dynamic> map = {};
           map['file'] =
-              await MultipartFile.fromFile(item!.path, filename:nameImage);
+              await MultipartFile.fromFile(item!.path, filename: nameImage);
 
           FormData data = FormData.fromMap(map);
 
@@ -423,7 +422,6 @@ class _AddInfoState extends State<AddInfo> {
     });
   }
 
-  
   @override
   void initState() {
     initailFile();
@@ -441,11 +439,12 @@ class _AddInfoState extends State<AddInfo> {
     double size = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-        brightness: Brightness.dark,
         title: Text(
           'ข้อมูลร้าน',
           style: MyFont().white,
         ),
+        systemOverlayStyle: SystemUiOverlayStyle.light,
+        backgroundColor: MyConstant.primary,
       ),
       body: SingleChildScrollView(
         child: LayoutBuilder(

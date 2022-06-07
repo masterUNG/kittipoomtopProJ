@@ -6,7 +6,7 @@
 	<dict>
 		<key>Headers/FLTImagePickerImageUtil.h</key>
 		<data>
-		4psxowtH2ZvLODf+tBgKJYuDX/M=
+		SMlyFZj2SvJBjywLwVFhKKpLQ78=
 		</data>
 		<key>Headers/FLTImagePickerMetaDataUtil.h</key>
 		<data>
@@ -18,7 +18,11 @@
 		</data>
 		<key>Headers/FLTImagePickerPlugin.h</key>
 		<data>
-		uFVm828TX1UmFmZPBE2YWBxQ4k8=
+		AvB6kMpiN90y2x+jj+S990ze4FA=
+		</data>
+		<key>Headers/FLTImagePickerPlugin_Test.h</key>
+		<data>
+		HK9FNynCwIoCr/rB/QG5qKg+lWs=
 		</data>
 		<key>Headers/FLTPHPickerSaveImageToPathOperation.h</key>
 		<data>
@@ -26,15 +30,15 @@
 		</data>
 		<key>Headers/image_picker-umbrella.h</key>
 		<data>
-		IFl3SJc0H5TjqpRE2habfNghSxY=
+		6ndCxSOSQLJOysMafpz7NJhb8NA=
 		</data>
 		<key>Info.plist</key>
 		<data>
-		UGgyIOC9REG2cbaJouvb0GX7ta4=
+		HNm34G4QLwvNhe6gMSlefOJH4o8=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
-		FkT46fSjvT+d0jUKMdp1vMjrHB4=
+		uNvKMLARzXcvKISnRkyjRw5l7Po=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -43,11 +47,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			4psxowtH2ZvLODf+tBgKJYuDX/M=
+			SMlyFZj2SvJBjywLwVFhKKpLQ78=
 			</data>
 			<key>hash2</key>
 			<data>
-			iHYZCLrrJ9P+EICaLY7YhQUuGs8RnEnnZDGeju347bA=
+			yykcI3M6t8zMn7Ass3OakoUbw6aHcboaEAOWLO+EZbM=
 			</data>
 		</dict>
 		<key>Headers/FLTImagePickerMetaDataUtil.h</key>
@@ -76,11 +80,22 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			uFVm828TX1UmFmZPBE2YWBxQ4k8=
+			AvB6kMpiN90y2x+jj+S990ze4FA=
 			</data>
 			<key>hash2</key>
 			<data>
-			x2pQ3urChPqb25FxG8Whl2uHSGH6pvtEW+I2lNisTmw=
+			SgTAdTrlsOQ5YI6rajFnm68iQy/p9yBexdLMVw6Y6C4=
+			</data>
+		</dict>
+		<key>Headers/FLTImagePickerPlugin_Test.h</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			HK9FNynCwIoCr/rB/QG5qKg+lWs=
+			</data>
+			<key>hash2</key>
+			<data>
+			94uwc5W0LjkG3HJFq4xOdzGr1/u7nMwCf2a5eKWD6fc=
 			</data>
 		</dict>
 		<key>Headers/FLTPHPickerSaveImageToPathOperation.h</key>
@@ -98,22 +113,22 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			IFl3SJc0H5TjqpRE2habfNghSxY=
+			6ndCxSOSQLJOysMafpz7NJhb8NA=
 			</data>
 			<key>hash2</key>
 			<data>
-			O5i0VPdcmotnzr2a3VMXa95t5L9lot6wFX9Etdnr3rQ=
+			c0/3t/DPXt86jmKmwgZzAUOHTj62sZUdsSqw8RJTjrM=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			FkT46fSjvT+d0jUKMdp1vMjrHB4=
+			uNvKMLARzXcvKISnRkyjRw5l7Po=
 			</data>
 			<key>hash2</key>
 			<data>
-			esQ6um240DwJMifgqWNrU4F6nL3YH3JdNylXuJl8SIo=
+			9eDs/Gkj75FhJY8lszn43zSZGg9waqeScm/OYq4fHHk=
 			</data>
 		</dict>
 	</dict>

@@ -34,7 +34,7 @@ class _SignInState extends State<SignIn> {
               height: 10,
             ),
             Container(
-              alignment: Alignment.centerLeft,  
+              alignment: Alignment.centerLeft,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
@@ -59,7 +59,10 @@ class _SignInState extends State<SignIn> {
                   hintText: 'Enter Your Email',
                   hintStyle: MyFont().grey,
                   contentPadding: EdgeInsets.only(top: 14.0),
-                  prefixIcon: Icon(Icons.alternate_email_outlined,color: Colors.black,),
+                  prefixIcon: Icon(
+                    Icons.alternate_email_outlined,
+                    color: Colors.black,
+                  ),
                 ),
               ),
             ),
@@ -98,7 +101,6 @@ class _SignInState extends State<SignIn> {
           ),
           height: 50,
           child: TextField(
-            
             onChanged: (val) {
               setState(() => password = val.trim());
             },
@@ -107,7 +109,6 @@ class _SignInState extends State<SignIn> {
               color: Color(0xFF162447),
             ),
             decoration: InputDecoration(
-              
               border: InputBorder.none,
               hintText: 'Password',
               hintStyle: MyFont().grey,
@@ -129,14 +130,19 @@ class _SignInState extends State<SignIn> {
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () async {
+          MyDialog().loadingDialog(context);
           if (email.isNotEmpty || password.isNotEmpty) {
             checkAuth(email, password);
           } else {
-            MyDialog().failDialog(context, 'Heyy !!', 'กรุณาใส่ email และ password');
-            
+            MyDialog()
+                .failDialog(context, 'Heyy !!', 'กรุณาใส่ email และ password');
+            Navigator.pop(context);
           }
         },
-        child: Text('LOGIN',style: MyFont().white,),
+        child: Text(
+          'LOGIN',
+          style: MyFont().white,
+        ),
         style: ElevatedButton.styleFrom(
             primary: MyConstant.focus,
             fixedSize: Size(300, 50),
@@ -154,82 +160,76 @@ class _SignInState extends State<SignIn> {
       child: RichText(
         text: TextSpan(
           children: [
-            TextSpan(
-              text: 'Don\'t have an Account? ',
-              style: MyFont().white16
-            ),
-            TextSpan(
-              text: 'Sign Up',
-              style: MyFont().white16Bold
-            ),
+            TextSpan(text: 'Don\'t have an Account? ', style: MyFont().white16),
+            TextSpan(text: 'Sign Up', style: MyFont().white16Bold),
           ],
         ),
       ),
     );
   }
 
-  Future<Null> checkAuth (String? email, String? password) async {
-
-    String path = '${MyConstant.domain}/hangout/getUserWhereEmail.php?isAdd=true&email=$email';
+  Future<Null> checkAuth(String? email, String? password) async {
+    String path =
+        '${MyConstant.domain}/hangout/getUserWhereEmail.php?isAdd=true&email=$email';
     await Dio().get(path).then((value) async {
-
       //print('value >>> $value');
-      
+
       if (value.toString() == 'null') {
+        Navigator.pop(context);
         MyDialog().failDialog(context, 'Oops !', 'กรุณาสมัครสมาชิคค่ะ');
-
       } else {
-
         for (var item in json.decode(value.data)) {
           UserModel model = UserModel.fromMap(item);
-          
-          if ( model.password == password ) {
+
+          if (model.password == password) {
             //Success
             String type = model.chooseType;
             checkType(type);
 
-            SharedPreferences preferences = await SharedPreferences.getInstance();
+            SharedPreferences preferences =
+                await SharedPreferences.getInstance();
             preferences.setString('type', type); //ฝังค่าลงไปในpreference
             preferences.setString('username', model.username);
             preferences.setString('id', model.id);
-            
+            preferences.setString('status', model.status);
           } else {
             //Fail
-            MyDialog().failDialog(context, 'Opps !', 'Password ไม่ถูกต้อง กรุณาลองใหม่อีกครั้งค่ะ');
+            Navigator.pop(context);
+            MyDialog().failDialog(context, 'Opps !',
+                'Password ไม่ถูกต้อง กรุณาลองใหม่อีกครั้งค่ะ');
           }
         }
-        
       }
     });
   }
 
-  Future<Null> checkType (String? type) async {
-    
+  Future<Null> checkType(String? type) async {
     switch (type) {
       case 'User':
-      Navigator.pushNamedAndRemoveUntil(context, MyConstant.rountUserMain, (route) => false);
-        
-      break;
+        Navigator.pushNamedAndRemoveUntil(
+            context, MyConstant.rountUserMain, (route) => false);
 
-      case'Store':
-      Navigator.pushNamedAndRemoveUntil(context, MyConstant.rountAdminMain, (route) => false);
+        break;
 
-      break;
+      case 'Store':
+        Navigator.pushNamedAndRemoveUntil(
+            context, MyConstant.rountAdminMain, (route) => false);
+
+        break;
 
       default:
     }
   }
-  
 
   @override
   Widget build(BuildContext context) {
-
     //double size = MediaQuery.of(context).size.width;
 
     return Scaffold(
       backgroundColor: MyConstant.primary,
-      body: GestureDetector( //แทบตรงไหนก็ได้คีย์บอร์ดจะลง
-        onTap: () => FocusScope.of(context).requestFocus(FocusNode()), 
+      body: GestureDetector(
+        //แทบตรงไหนก็ได้คีย์บอร์ดจะลง
+        onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
         child: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.light,
           child: Form(
@@ -256,10 +256,7 @@ class _SignInState extends State<SignIn> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text(
-                          'hangout',
-                          style: MyFont().white40
-                        ),
+                        Text('hangout', style: MyFont().white40),
                         SizedBox(
                           height: 30,
                         ),

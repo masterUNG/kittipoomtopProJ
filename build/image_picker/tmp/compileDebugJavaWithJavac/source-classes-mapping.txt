@@ -1,5 +1,6 @@
 io/flutter/plugins/imagepicker/ImagePickerPlugin.java
  io.flutter.plugins.imagepicker.ImagePickerPlugin
+ io.flutter.plugins.imagepicker.ImagePickerPlugin$ActivityState
  io.flutter.plugins.imagepicker.ImagePickerPlugin$LifeCycleObserver
  io.flutter.plugins.imagepicker.ImagePickerPlugin$MethodResultWrapper
  io.flutter.plugins.imagepicker.ImagePickerPlugin$MethodResultWrapper$1

@@ -3,7 +3,6 @@ import 'dart:io';
 import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:hangout/models/user_model.dart';
 import 'package:hangout/shared/dialog.dart';
@@ -20,7 +19,6 @@ class AddPromotion extends StatefulWidget {
 }
 
 class _AddPromotionState extends State<AddPromotion> {
-
   UserModel? userModel;
 
   File? image;
@@ -35,7 +33,7 @@ class _AddPromotionState extends State<AddPromotion> {
   Future<Null> findData() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String id = preferences.getString('id')!;
-    
+
     String apiGetInfo =
         '${MyConstant.domain}/hangout/getUserWhereId.php?isAdd=true&id=$id';
     await Dio().get(apiGetInfo).then((value) {
@@ -216,9 +214,7 @@ class _AddPromotionState extends State<AddPromotion> {
         onPressed: () async {
           if (formKey.currentState!.validate()) {
             addPromotion();
-          } else {
-          
-          }
+          } else {}
         },
         child: Text(
           'CONFIRM',
@@ -273,15 +269,16 @@ class _AddPromotionState extends State<AddPromotion> {
     String price = priceController.text;
     String detail = detailController.text;
 
-
     String urlInsertData =
         '${MyConstant.domain}/hangout/addPromotion.php?isAdd=true&idStore=$idStore&NameStore=$nameStore&Promotion=$promotion&Price=$price&Detail=$detail&ImagePromotion=$imagePromotion';
     await Dio().get(urlInsertData).then((value) {
-      if (value.toString() == 'true'){
+      if (value.toString() == 'true') {
         Navigator.pop(context);
-        MyDialog().successDialog(context, 'Successfully!', 'บันทึกข้อมูลสำเร็จ');
+        MyDialog()
+            .successDialog(context, 'Successfully!', 'บันทึกข้อมูลสำเร็จ');
       } else {
-        MyDialog().failDialog(context, 'Opps', 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งค่ะ');
+        MyDialog().failDialog(
+            context, 'Opps', 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งค่ะ');
       }
     });
   }
@@ -291,16 +288,18 @@ class _AddPromotionState extends State<AddPromotion> {
     findData();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-        brightness: Brightness.dark,
         title: Text(
           'เพิ่มโปรโมชั่น',
           style: MyFont().white,
         ),
+        systemOverlayStyle: SystemUiOverlayStyle.light,
+        backgroundColor: MyConstant.primary,
       ),
       body: SingleChildScrollView(
         child: LayoutBuilder(
@@ -310,7 +309,6 @@ class _AddPromotionState extends State<AddPromotion> {
               child: Form(
                 key: formKey,
                 child: Column(
-                  
                   children: [
                     _buildPromotion(constraints),
                     _buildPrice(constraints),

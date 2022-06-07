@@ -68,6 +68,22 @@ class MyFont {
       
     ),
   );
+
+  TextStyle white25 = GoogleFonts.prompt(
+    textStyle: TextStyle(
+      color: Colors.white,
+      fontSize: 25.0,
+      
+    ),
+  );
+
+   TextStyle white30 = GoogleFonts.prompt(
+    textStyle: TextStyle(
+      color: Colors.white,
+      fontSize: 30.0,
+      
+    ),
+  );
   
   TextStyle white = GoogleFonts.prompt(
     textStyle: TextStyle(
@@ -87,6 +103,14 @@ class MyFont {
     textStyle: TextStyle(
       color: Colors.grey,
       fontSize: 16.0,
+      
+    ),
+  );
+
+  TextStyle grey18 = GoogleFonts.prompt(
+    textStyle: TextStyle(
+      color: Colors.grey,
+      fontSize: 18.0,
       
     ),
   );

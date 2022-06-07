@@ -1,24 +1,26 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hangout/models/user_model.dart';
 import 'package:hangout/shared/constant.dart';
 import 'package:hangout/shared/dialog.dart';
 import 'package:hangout/shared/font.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class EditInfo extends StatefulWidget {
   final UserModel userModel;
-  const EditInfo({Key? key,required this.userModel}) : super(key: key);
+  const EditInfo({Key? key, required this.userModel}) : super(key: key);
 
   @override
   _EditInfoState createState() => _EditInfoState();
 }
 
 class _EditInfoState extends State<EditInfo> {
-
   UserModel? userModel;
 
   File? image;
@@ -26,6 +28,12 @@ class _EditInfoState extends State<EditInfo> {
   List<File?> images = [];
 
   List<String> paths = [];
+
+  List<String> imageData = <String>[];
+
+  List<int> imageBytes = [];
+
+  String? image1, image2, image3, image4;
 
   final ImagePicker _picker = ImagePicker();
   final formKey = GlobalKey<FormState>();
@@ -347,14 +355,29 @@ class _EditInfoState extends State<EditInfo> {
       setState(() {
         image = File(_image!.path);
         //print('image ===> $_image');
+
         images[index] = image;
+
+        //imageData = base64Encode(images[index]!.readAsBytesSync());
+        //image1 = base64Encode(images[0]!.readAsBytesSync());
       });
     } catch (e) {
       print('Failed ==> $e');
     }
   }
 
-  Future<Null> processAddImage() async {
+  Future<void> convertFile() async {
+    setState(() {
+      image1 = base64Encode(images[0]!.readAsBytesSync());
+      image2 = base64Encode(images[1]!.readAsBytesSync());
+      image3 = base64Encode(images[2]!.readAsBytesSync());
+      image4 = base64Encode(images[3]!.readAsBytesSync());
+    });
+  }
+
+  Future<void> processAddImage() async {
+    convertFile();
+
     if (formKey.currentState!.validate()) {
       bool checkFile = true;
 
@@ -363,42 +386,98 @@ class _EditInfoState extends State<EditInfo> {
           checkFile = false;
         }
       }
+
       if (checkFile) {
         MyDialog().loadingDialog(context);
 
         String apiSaveImages =
             '${MyConstant.domain}/hangout/saveImageStore.php';
 
-        int loop = 0;
-        for (var item in images) {
-          int i = Random().nextInt(10000000);
-          String nameImage = 'store$i.jpg';
+        int i = Random().nextInt(100000);
+        String nameStore1 = 'store$i.jpg';
 
-          paths.add('${MyConstant.domain}/hangout/store/$nameImage');
+        int j = Random().nextInt(100000);
+        String nameStore2 = 'store$j.jpg';
 
-          Map<String, dynamic> map = {};
-          map['file'] =
-              await MultipartFile.fromFile(item!.path, filename: nameImage);
+        int k = Random().nextInt(100000);
+        String nameStore3 = 'store$k.jpg';
 
-          FormData data = FormData.fromMap(map);
+        int l = Random().nextInt(100000);
+        String nameStore4 = 'store$l.jpg';
 
-          await Dio().post(apiSaveImages, data: data).then((value) async {
+        paths.add('${MyConstant.domain}/hangout/store/$nameStore1');
+        paths.add('${MyConstant.domain}/hangout/store/$nameStore2');
+        paths.add('${MyConstant.domain}/hangout/store/$nameStore3');
+        paths.add('${MyConstant.domain}/hangout/store/$nameStore4');
+
+        try {
+          var res = await http.post(Uri.parse(apiSaveImages),
+              body: {"data": image1, "nameImage": nameStore1});
+          var response1 = jsonDecode(res.body);
+
+          if (response1["success"] == "true") {
             print('Upload Success');
-            loop++;
-            if (loop >= images.length) {
-              //editUserStore();
-              addInfo();
-              Navigator.pop(context);
-            }
-          });
+          } else {
+            print('Upload failed');
+          }
+        } catch (e) {
+          print(e);
         }
+
+        try {
+          var res2 = await http.post(Uri.parse(apiSaveImages),
+              body: {"data": image2, "nameImage": nameStore2});
+          var response2 = jsonDecode(res2.body);
+
+          if (response2["success"] == "true") {
+            print('Upload Success');
+          } else {
+            print('Upload failed');
+          }
+        } catch (e) {
+          print(e);
+        }
+
+        try {
+          var res = await http.post(Uri.parse(apiSaveImages),
+              body: {"data": image3, "nameImage": nameStore3});
+          var response3 = jsonDecode(res.body);
+
+          if (response3["success"] == "true") {
+            print('Upload Success');
+          } else {
+            print('Upload failed');
+          }
+        } catch (e) {
+          print(e);
+        }
+
+        try {
+          var res = await http.post(Uri.parse(apiSaveImages),
+              body: {"data": image4, "nameImage": nameStore4});
+          var response4 = jsonDecode(res.body);
+
+          if (response4["success"] == "true") {
+            print('Upload Success');
+          } else {
+            print('Upload failed');
+          }
+        } catch (e) {
+          print(e);
+        }
+
+        
+        print('Path : $paths');
+        addInfo();
+
+
       } else {
         MyDialog().failDialog(context, 'Opps', 'กรุณาเพิ่มรูปภาพให้ครบ');
       }
     }
   }
 
-  Future<Null> addInfo() async {
+  Future<void> addInfo() async {
     String nameStore = nameController.text;
     String city = cityController.text;
     String bio = detailController.text;
@@ -426,11 +505,10 @@ class _EditInfoState extends State<EditInfo> {
     });
   }
 
-  
   @override
   void initState() {
     userModel = widget.userModel;
-    initailFile();
+    initialFile();
 
     nameController.text = widget.userModel.nameStore;
     cityController.text = widget.userModel.city;
@@ -440,7 +518,7 @@ class _EditInfoState extends State<EditInfo> {
     super.initState();
   }
 
-  void initailFile() {
+  void initialFile() {
     for (var i = 0; i < 4; i++) {
       images.add(null);
     }
@@ -451,8 +529,12 @@ class _EditInfoState extends State<EditInfo> {
     double size = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-        brightness: Brightness.dark,
-        title: Text('แก้ไขข้อมูลร้าน',style: MyFont().white18,),
+        title: Text(
+          'แก้ไขข้อมูลร้าน',
+          style: MyFont().white18,
+        ),
+        systemOverlayStyle: SystemUiOverlayStyle.light,
+        backgroundColor: MyConstant.primary,
       ),
       body: SingleChildScrollView(
         child: LayoutBuilder(

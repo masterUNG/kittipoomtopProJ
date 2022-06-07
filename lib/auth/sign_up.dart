@@ -20,7 +20,7 @@ class _SignUpState extends State<SignUp> {
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  TextEditingController usernNameController = TextEditingController();
+  TextEditingController userNameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
@@ -82,7 +82,7 @@ class _SignUpState extends State<SignUp> {
   Widget _buildUsername() {
     return Container(
       child: TextFormField(
-        controller: usernNameController,
+        controller: userNameController,
         validator: (val) => val!.isEmpty ? 'กรุณาใส่ username' : null,
         style: TextStyle(
           fontSize: 18,
@@ -208,7 +208,7 @@ class _SignUpState extends State<SignUp> {
   Future<Null> checkEmail() async {
     String email = emailController.text;
     String password = passwordController.text;
-    String username = usernNameController.text;
+    String username = userNameController.text;
     String phone = phoneController.text;
     String chooseType = type.toString();
     String path =
