@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,7 +19,11 @@ class SignIn extends StatefulWidget {
 
 class _SignInState extends State<SignIn> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  late String email, password;
+  late String email, password, encodePass;
+
+  String generateMd5(String input) {
+    return md5.convert(utf8.encode(input)).toString();
+  }
 
   Widget _buildEmail() {
     return Column(
@@ -102,7 +107,11 @@ class _SignInState extends State<SignIn> {
           height: 50,
           child: TextField(
             onChanged: (val) {
-              setState(() => password = val.trim());
+              setState(() {
+                password = val.trim();
+
+                encodePass = generateMd5(password);
+              });
             },
             obscureText: true,
             style: TextStyle(
@@ -130,8 +139,9 @@ class _SignInState extends State<SignIn> {
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () async {
-          MyDialog().loadingDialog(context);
+          
           if (email.isNotEmpty || password.isNotEmpty) {
+            MyDialog().loadingDialog(context);
             checkAuth(email, password);
           } else {
             MyDialog()
@@ -169,19 +179,21 @@ class _SignInState extends State<SignIn> {
   }
 
   Future<Null> checkAuth(String? email, String? password) async {
+    
     String path =
         '${MyConstant.domain}/hangout/getUserWhereEmail.php?isAdd=true&email=$email';
     await Dio().get(path).then((value) async {
       //print('value >>> $value');
 
-      if (value.toString() == 'null') {
+      if (value.toString() == 'null' ) {   
         Navigator.pop(context);
         MyDialog().failDialog(context, 'Oops !', 'กรุณาสมัครสมาชิคค่ะ');
+        
       } else {
         for (var item in json.decode(value.data)) {
           UserModel model = UserModel.fromMap(item);
 
-          if (model.password == password) {
+          if (model.password == encodePass) {
             //Success
             String type = model.chooseType;
             checkType(type);
@@ -191,10 +203,12 @@ class _SignInState extends State<SignIn> {
             preferences.setString('type', type); //ฝังค่าลงไปในpreference
             preferences.setString('username', model.username);
             preferences.setString('id', model.id);
-            preferences.setString('status', model.status);
+            preferences.setString('phone', model.phone);
+            
           } else {
             //Fail
             Navigator.pop(context);
+
             MyDialog().failDialog(context, 'Opps !',
                 'Password ไม่ถูกต้อง กรุณาลองใหม่อีกครั้งค่ะ');
           }
@@ -204,6 +218,7 @@ class _SignInState extends State<SignIn> {
   }
 
   Future<Null> checkType(String? type) async {
+
     switch (type) {
       case 'User':
         Navigator.pushNamedAndRemoveUntil(

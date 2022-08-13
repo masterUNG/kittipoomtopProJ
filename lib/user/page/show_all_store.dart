@@ -37,6 +37,7 @@ class _ShowAllStoreState extends State<ShowAllStore> {
         if (nameStore.isNotEmpty && verify == 'ยืนยัน') {
           setState(() {
             index++;
+            userModels.shuffle();
             userModels.add(userModel!);
             
           });
@@ -70,7 +71,6 @@ class _ShowAllStoreState extends State<ShowAllStore> {
         itemBuilder: (context, index) {
           return InkWell(
             onTap: () {
-              print('You Click index $index');
               MaterialPageRoute route = MaterialPageRoute(
                   builder: (context) => DetailStore(
                         userModel: userModels[index],

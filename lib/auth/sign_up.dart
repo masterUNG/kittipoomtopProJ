@@ -1,9 +1,12 @@
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hangout/shared/constant.dart';
 import 'package:hangout/shared/dialog.dart';
 import 'package:hangout/shared/font.dart';
+import 'package:hangout/shared/termsAndConditions.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 class SignUp extends StatefulWidget {
@@ -15,7 +18,6 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
   late String verify;
-
   String? type;
 
   TextEditingController emailController = TextEditingController();
@@ -24,6 +26,10 @@ class _SignUpState extends State<SignUp> {
   TextEditingController phoneController = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
+
+  String generateMd5(String input) {
+    return md5.convert(utf8.encode(input)).toString();
+  }
 
   Widget _buildEmail() {
     return Column(
@@ -134,12 +140,12 @@ class _SignUpState extends State<SignUp> {
         onPressed: () async {
           if (formKey.currentState!.validate()) {
             formKey.currentState!.save();
-            
+
             checkEmail();
           }
         },
         child: Text(
-          'Registor',
+          'สมัครสมาชิค',
           style: MyFont().white,
         ),
         style: ElevatedButton.styleFrom(
@@ -216,7 +222,12 @@ class _SignUpState extends State<SignUp> {
     try {
       Response response = await Dio().get(path);
       if (response.toString() == 'null') {
-        registerThread(email:email,password: password,username: username,phone: phone,chooseType:chooseType);
+        registerThread(
+            email: email,
+            password: password,
+            username: username,
+            phone: phone,
+            chooseType: chooseType);
       } else {
         MyDialog()
             .failDialog(context, 'ไม่สำเร็จ', '$email นี้มีผู้อื่นใช้ไปแล้ว');
@@ -231,20 +242,69 @@ class _SignUpState extends State<SignUp> {
     String? phone,
     String? chooseType,
   }) async {
+    MyDialog().loadingDialog(context);
     String path =
-        '${MyConstant.domain}/hangout/addUser.php?isAdd=true&email=$email&password=$password&username=$username&phone=$phone&chooseType=$chooseType&verify=$verify';
+        '${MyConstant.domain}/hangout/addUser.php?isAdd=true&email=$email&password=${generateMd5(password!)}&username=$username&phone=$phone&chooseType=$chooseType&verify=$verify';
     await Dio().get(path).then((value) {
       if (value.toString() == 'true') {
-      Navigator.pop(context);
-      MyDialog().successDialog(context, 'ยินดีด้วย', 'คุณสมัครสมาชิคสำเร็จ');
+        Navigator.pop(context);
+        Navigator.pop(context);
+        MyDialog().successDialog(context, 'ยินดีด้วย', 'คุณสมัครสมาชิคสำเร็จ');
       } else {
-        MyDialog()
-            .failDialog(context, 'ไม่สำเร็จ', 'กรุณาลองใหม่อีกครั้งค่ะ');
+        MyDialog().failDialog(context, 'ไม่สำเร็จ', 'กรุณาลองใหม่อีกครั้งค่ะ');
       }
     });
-   
+    //Navigator.pop(context);
+  }
 
-    
+  _showDialog() async {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return new AlertDialog(
+            elevation: 10.0,
+            title: Text(
+              'ข้อกำหนดและเงื่อนไขการให้บริการ',
+              style: MyFont().black18Bold,
+            ),
+            content: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    height: 200,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: Text(
+                        termsAndConditions.termsAndCondition,
+                        style: MyFont().black16,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  'ข้าพเจ้ายอมรับเงื่อนไข',
+                  style: MyFont().black16Bold,
+                ),
+              ),
+            ],
+          );
+        });
+  }
+
+  @override
+  void initState() {
+    Future.delayed(Duration.zero, () {
+      this._showDialog();
+    });
+
+    super.initState();
   }
 
   @override

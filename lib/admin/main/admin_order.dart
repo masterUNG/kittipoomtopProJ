@@ -3,7 +3,6 @@ import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_button/flutter_animated_button.dart';
-import 'package:hangout/shared/chair.dart';
 import 'package:hangout/shared/constant.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
@@ -19,124 +18,30 @@ class AdminOrder extends StatefulWidget {
 }
 
 class _AdminOrderState extends State<AdminOrder> {
-  Widget chairList() {
-    Size size = MediaQuery.of(context).size;
-    // 1 = free
-    // 2 = select
-    // 3 = reserved
-    var _chairStatus = [
-      [
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-      ],
-      [
-        1,
-        1,
-        1,
-        1,
-        3,
-        1,
-        1,
-      ],
-      [
-        1,
-        1,
-        1,
-        1,
-        1,
-        3,
-        3,
-      ],
-      [
-        2,
-        2,
-        2,
-        1,
-        3,
-        1,
-        1,
-      ],
-      [
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-      ],
-      [
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-      ],
-    ];
-
-    return Container(
-      child: Column(
-        children: [
-          for (int i = 0; i < 6; i++)
-            Container(
-              margin: EdgeInsets.only(top: i == 3 ? size.height * 0.02 : 0),
-              child: Row(
-                children: [
-                  for (int x = 0; x < 9; x++)
-                    Expanded(
-                        flex: x == 0 || x == 8 ? 2 : 1,
-                        child: x == 0 ||
-                                x == 8 ||
-                                (i == 0 && x == 0) ||
-                                (i == 0 && x == 8) ||
-                                (x == 4)
-                            ? Container()
-                            : Container(
-                                height: size.width / 11 - 10,
-                                margin: EdgeInsets.all(5.0),
-                                child: _chairStatus[i][x - 1] == 1
-                                    ? MyChairs.availbleChair()
-                                    : _chairStatus[i][x - 1] == 2
-                                        ? MyChairs.selectedChair()
-                                        : MyChairs.reservedChair())),
-                ],
-              ),
-            )
-        ],
-      ),
-    );
-  }
-
   String? idUser, timeBooking, timeToday, today, table, username, numberTable;
   String? title, testNum, status, tableNumber;
+
+  bool load = true; // load JSON
+  bool? haveData; //have data
 
   List<String> myList = [];
 
   TableModelUser? tableModelUser;
   List<TableModelUser> tableModelUsers = [];
- 
-
 
   DatePickerController _controller = DatePickerController();
   DateTime _selectedValue = DateTime.now();
 
-  Future<Null> readTable() async {
+  Future<void> readTable() async {
     if (tableModelUsers.length != 0) {
       tableModelUsers.clear();
     }
 
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String idStore = preferences.getString('id')!;
-    String? statusStore = preferences.getString('status');
+
     setState(() {
-      status = statusStore;
+      status = 'true';
     });
 
     String url =
@@ -144,7 +49,12 @@ class _AdminOrderState extends State<AdminOrder> {
 
     await Dio().get(url).then((value) {
       //*ป้องกันค่า null แล้วเกิด bug
-      if (value.toString() != 'null') {
+      if (value.toString() == 'null') {
+        setState(() {
+          load = false;
+          haveData = false;
+        });
+      } else {
         for (var item in json.decode(value.data)) {
           tableModelUser = TableModelUser.fromMap(item);
           if (tableModelUser?.bookingDate == timeBooking) {
@@ -156,10 +66,10 @@ class _AdminOrderState extends State<AdminOrder> {
         }
       }
     });
-    print('Status = $statusStore');
+    print('Status = $status');
   }
 
-  Future<Null> readTable2() async {
+  Future<void> readTable2() async {
     if (tableModelUsers.length != 0) {
       tableModelUsers.clear();
     }
@@ -167,14 +77,24 @@ class _AdminOrderState extends State<AdminOrder> {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String idStore = preferences.getString('id')!;
 
+    setState(() {
+      status = 'true';
+    });
+
     String url =
         '${MyConstant.domain}/hangout/getTableWhereIdStore.php?isAdd=true&idStore=$idStore&BookingDate=$timeBooking';
 
     await Dio().get(url).then((value) {
       //*ป้องกันค่า null แล้วเกิด bug
-      if (value.toString() != 'null') {
+      if (value.toString() == 'null') {
+        setState(() {
+          load = false;
+          haveData = false;
+        });
+      } else {
         for (var item in json.decode(value.data)) {
           tableModelUser = TableModelUser.fromMap(item);
+
           if (tableModelUser?.bookingDate == timeBooking) {
             setState(() {
               tableModelUsers.add(tableModelUser!);
@@ -184,7 +104,6 @@ class _AdminOrderState extends State<AdminOrder> {
         }
       }
     });
-    print(myList.contains(10));
     print('จำนวนโต๊ะ : ${tableModelUsers.length}');
     Navigator.of(context).pop();
   }
@@ -203,7 +122,7 @@ class _AdminOrderState extends State<AdminOrder> {
   Widget showData() {
     return Scaffold(
       body: Container(
-        margin: EdgeInsets.all(10.0),
+        //margin: EdgeInsets.all(10.0),
         child: ListView(
           physics:
               BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
@@ -227,26 +146,27 @@ class _AdminOrderState extends State<AdminOrder> {
   }
 
   Widget _dateCeledar() {
-    setState(() {
-      String _dateTime = DateFormat('yyyy-MM-dd').format(_selectedValue);
-      timeBooking = _dateTime;
-    });
     return Container(
       child: DatePicker(
         DateTime.now(),
         width: 60,
         height: 80,
         controller: _controller,
-        initialSelectedDate: DateTime.now(),
-        selectionColor: Colors.black,
-        selectedTextColor: Colors.white,
+        //initialSelectedDate: DateTime.now(),
+        selectionColor: Colors.white,
+        selectedTextColor: MyConstant.focus,
+        deactivatedColor: Colors.grey,
         onDateChange: (date) {
+          readTable2();
+
           MyDialog().loadingDialog(context);
           setState(() {
             _selectedValue = date;
             title = 'ยังไม่มีจองในขณะนี้';
+            String _dateTime = DateFormat('d MMMM y').format(_selectedValue);
+            timeBooking = _dateTime;
           });
-          readTable2();
+
         },
       ),
     );
@@ -340,64 +260,10 @@ class _AdminOrderState extends State<AdminOrder> {
         setState(() {
           tableNumber = number;
         });
-        findInfoUser();
         print('Number table => $number');
       },
     );
   }
-
-  Future<void> findInfoUser() async {
-    print('Number table Find => $tableNumber');
-    if (tableModelUser!.numberTable == tableNumber) {
-      openDialogHaveInfo();
-    } else {
-      openDialogNoInfo();
-    }
-  }
-
-  Future openDialogHaveInfo() => showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-            title: Text(
-              'ข้อมูลลูกค้าที่จอง',
-              style: MyFont().black16,
-            ),
-            content: Container(
-              height: 80.0,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'ชื่อผู้ใช้ = ${tableModelUser?.username}',
-                    style: MyFont().black16,
-                  ),
-                  Text(
-                    'เวลาที่จอง = ${tableModelUser?.bookingDate}',
-                    style: MyFont().black16,
-                  ),
-                ],
-              ),
-            )),
-      );
-
-  Future openDialogNoInfo() => showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-            title: Text(
-              'ข้อมูลลูกค้าที่จอง',
-              style: MyFont().black16,
-            ),
-            content: Container(
-              height: 80.0,
-              child: Center(
-                child: Text(
-                  'โต๊ะนี้ยังไม่ถูกจอง',
-                  style: MyFont().black16,
-                ),
-              ),
-            )),
-      );
 
   @override
   void initState() {

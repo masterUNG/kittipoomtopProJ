@@ -6,7 +6,6 @@ import 'package:hangout/models/table_model.dart';
 import 'package:hangout/shared/constant.dart';
 import 'package:hangout/shared/dialog.dart';
 import 'package:hangout/shared/font.dart';
-import 'package:hangout/shared/show_progress.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
@@ -18,7 +17,6 @@ class AdminTable extends StatefulWidget {
 }
 
 class _AdminTableState extends State<AdminTable> {
-  
   String? timeBooking, title;
   bool load = true;
   bool haveData = false;
@@ -28,10 +26,6 @@ class _AdminTableState extends State<AdminTable> {
   DateTime _selectedValue = DateTime.now();
 
   Widget dateCalendar() {
-    setState(() {
-      String _dateTime = DateFormat('yyyy-MM-dd').format(_selectedValue);
-      timeBooking = _dateTime;
-    });
     return Container(
       child: DatePicker(
         DateTime.now(),
@@ -42,13 +36,15 @@ class _AdminTableState extends State<AdminTable> {
         selectionColor: Colors.white,
         selectedTextColor: MyConstant.focus,
         deactivatedColor: Colors.grey,
-        
+
         onDateChange: (date) {
           setState(() {
-            haveData = true;
             _selectedValue = date;
             title = 'ยังไม่ได้เพิ่มโต๊ะ';
+            String _dateTime = DateFormat('d MMMM y').format(_selectedValue);
+            timeBooking = _dateTime;
           });
+          print(timeBooking);
           MyDialog().loadingDialog(context);
           readTable2();
         },
@@ -99,8 +95,6 @@ class _AdminTableState extends State<AdminTable> {
     await Dio().get(apiGetInfo).then((value) {
       if (value.toString() != 'null') {
         for (var item in json.decode(value.data)) {
-          load = false;
-          haveData = true;
           tableModel = TableModel.fromMap(item);
           if (tableModel?.bookingDate == timeBooking) {
             setState(() {
@@ -183,9 +177,9 @@ class _AdminTableState extends State<AdminTable> {
                   onPressed: () {},
                 ),
                 title: Text('โต๊ะที่ ${tableModels[index].numberTable}',
-                    style: MyFont().white18),
+                    style: MyFont().black18),
                 subtitle: Text('วันที่ ${tableModels[index].bookingDate}',
-                    style: MyFont().white18),
+                    style: MyFont().black18),
                 trailing: IconButton(
                     icon: Icon(Icons.delete),
                     color: Colors.red,
@@ -228,12 +222,10 @@ class _AdminTableState extends State<AdminTable> {
                 ? Center(
                     child: Text(
                       title!,
-                      style: MyFont().white18,
+                      style: MyFont().black18,
                     ),
                   )
-                : haveData == true
-                    ? _listNumberTable()
-                    : ShowProgress()
+                : _listNumberTable()
           ],
         ),
       ),
@@ -246,7 +238,7 @@ class _AdminTableState extends State<AdminTable> {
         ),
         backgroundColor: MyConstant.focus,
       ),
-      backgroundColor: MyConstant.primary,
+      backgroundColor: MyConstant.light,
     );
   }
 }

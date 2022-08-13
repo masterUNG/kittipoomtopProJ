@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 class MyConstant {
-
   // General
   static String appName = 'Hangout';
 
@@ -18,6 +17,8 @@ class MyConstant {
   static String rountAddPromotion = '/addPromotion';
   static String rountAddInfo = '/addInfo';
   static String rountAddTable = '/addTable';
+  static String rountSplash = '/splash';
+  static String rountAddEvent = '/addEvent';
 
   // Color
   static Color primary = HexColor('171717');
@@ -25,7 +26,4 @@ class MyConstant {
   static Color light = HexColor('EDEDED');
   static Color focus = HexColor('DA0037');
 
-  
-  
-  
-} 
+}

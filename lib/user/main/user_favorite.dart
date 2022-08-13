@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hangout/shared/constant.dart';
+import 'package:hangout/shared/font.dart';
 
 class UserFavorite extends StatefulWidget {
   const UserFavorite({Key? key}) : super(key: key);
@@ -12,9 +13,16 @@ class _UserFavoriteState extends State<UserFavorite> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: MyConstant.primary,
+        title: Text(
+          'Favorite',
+          style: MyFont().white,
+        ),
+      ),
       backgroundColor: MyConstant.primary,
       body: Center(
-        child: Text('Favorite'),
+        child: Text('Comming Soon',style: MyFont().white16,),
       ),
     );
   }

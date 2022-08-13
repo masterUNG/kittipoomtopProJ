@@ -380,7 +380,7 @@ class _EditInfoState extends State<EditInfo> {
 
     if (formKey.currentState!.validate()) {
       bool checkFile = true;
-
+      
       for (var item in images) {
         if (item == null) {
           checkFile = false;
@@ -394,16 +394,16 @@ class _EditInfoState extends State<EditInfo> {
             '${MyConstant.domain}/hangout/saveImageStore.php';
 
         int i = Random().nextInt(100000);
-        String nameStore1 = 'store$i.jpg';
+        String nameStore1 = '${widget.userModel.id}-$i.jpg';
 
         int j = Random().nextInt(100000);
-        String nameStore2 = 'store$j.jpg';
+        String nameStore2 = '${widget.userModel.id}-$j.jpg';
 
         int k = Random().nextInt(100000);
-        String nameStore3 = 'store$k.jpg';
+        String nameStore3 = '${widget.userModel.id}-$k.jpg';
 
         int l = Random().nextInt(100000);
-        String nameStore4 = 'store$l.jpg';
+        String nameStore4 = '${widget.userModel.id}-$l.jpg';
 
         paths.add('${MyConstant.domain}/hangout/store/$nameStore1');
         paths.add('${MyConstant.domain}/hangout/store/$nameStore2');
@@ -466,11 +466,8 @@ class _EditInfoState extends State<EditInfo> {
           print(e);
         }
 
-        
         print('Path : $paths');
         addInfo();
-
-
       } else {
         MyDialog().failDialog(context, 'Opps', 'กรุณาเพิ่มรูปภาพให้ครบ');
       }

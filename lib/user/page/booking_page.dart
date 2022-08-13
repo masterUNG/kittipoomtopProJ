@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:hangout/shared/constant.dart';
 import 'package:hangout/shared/dialog.dart';
 import 'package:hangout/shared/font.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -30,6 +29,7 @@ class _AddBookingState extends State<AddBooking> {
       table,
       username,
       numberTable,
+      phone,
       imageTable;
   String? title, testNum;
 
@@ -50,14 +50,17 @@ class _AddBookingState extends State<AddBooking> {
     setState(() {
       idUser = preferences.getString('id');
       username = preferences.getString('username');
+      phone = preferences.getString('phone');
     });
 
     print('IdUser is ==> $username');
+    print('Phone is ==> $phone');
   }
 
   Future<Null> readTable() async {
     if (tableModels.length != 0) {
       tableModels.clear();
+      myList.clear();
     }
     String url =
         '${MyConstant.domain}/hangout/getTableWhereId.php?isAdd=true&idStore=${widget.userModel.id}';
@@ -82,7 +85,9 @@ class _AddBookingState extends State<AddBooking> {
   Future<Null> readTable2() async {
     if (tableModels.length != 0) {
       tableModels.clear();
+      myList.clear();
     }
+
     String url =
         '${MyConstant.domain}/hangout/getTableWhereId.php?isAdd=true&idStore=${widget.userModel.id}';
 
@@ -100,7 +105,9 @@ class _AddBookingState extends State<AddBooking> {
         }
       }
     });
-    print(myList.contains(10));
+    //print('วันที่ => ${tableModel?.bookingDate}  == $timeBooking');
+    print('จำนวนโต๊ะ : ${tableModels.length}');
+    //print(myList.contains(10));
     Navigator.of(context).pop();
   }
 
@@ -108,7 +115,7 @@ class _AddBookingState extends State<AddBooking> {
     return Scaffold(
       body: Center(
           child: Text(
-        'ยังไม่มีให้จองในขณะนี้',
+        'ยังเปิดให้จองในขณะนี้',
         style: MyFont().white18,
       )),
       backgroundColor: MyConstant.primary,
@@ -120,8 +127,9 @@ class _AddBookingState extends State<AddBooking> {
       body: Container(
         margin: EdgeInsets.all(10.0),
         child: ListView(
-          physics:
-              BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+          physics: BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
+          ),
           children: [
             _dateCeledar(),
             SizedBox(
@@ -142,10 +150,6 @@ class _AddBookingState extends State<AddBooking> {
   }
 
   Widget _dateCeledar() {
-    setState(() {
-      String _dateTime = DateFormat('yyyy-MM-dd').format(_selectedValue);
-      timeBooking = _dateTime;
-    });
     return Container(
       child: DatePicker(
         DateTime.now(),
@@ -159,6 +163,8 @@ class _AddBookingState extends State<AddBooking> {
           setState(() {
             _selectedValue = date;
             title = 'ยังไม่มีให้จองในขณะนี้';
+            String _dateTime = DateFormat('d MMMM y').format(_selectedValue);
+            timeBooking = _dateTime;
           });
           MyDialog().loadingDialog(context);
           readTable2();
@@ -169,13 +175,24 @@ class _AddBookingState extends State<AddBooking> {
 
   Future<Null> addTableUser() async {
     DateTime dateTime = DateTime.now();
-    String orderDateTime = DateFormat('yyyy-MM-dd HH:mm').format(dateTime);
+    String orderDateTime = DateFormat('d MMMM y HH:mm').format(dateTime);
     bool checkIn = false;
     bool status = true;
 
     try {
       String urlInsertData =
-          '${MyConstant.domain}/hangout/addNumberTableUser.php?isAdd=true&NumberTable=$numberTable&idStore=${widget.userModel.id}&idUser=$idUser&Username=$username&NameStore=${widget.userModel.nameStore}&DateTime=$orderDateTime&CheckIn=$checkIn&BookingDate=${tableModel!.bookingDate}&Status=$status';
+          '${MyConstant.domain}/hangout/addTableHistory.php?isAdd=true&NumberTable=$numberTable&idStore=${widget.userModel.id}&idUser=$idUser&Username=$username&NameStore=${widget.userModel.nameStore}&DateTime=$orderDateTime&CheckIn=$checkIn&BookingDate=${tableModel!.bookingDate}&Status=$status&Phone=$phone';
+      Response response = await Dio().get(urlInsertData);
+      if (response.toString() == 'true') {
+        print('Success');
+      } else {
+        print('Fail');
+      }
+    } catch (e) {}
+
+    try {
+      String urlInsertData =
+          '${MyConstant.domain}/hangout/addNumberTableUser.php?isAdd=true&NumberTable=$numberTable&idStore=${widget.userModel.id}&idUser=$idUser&Username=$username&NameStore=${widget.userModel.nameStore}&DateTime=$orderDateTime&CheckIn=$checkIn&BookingDate=${tableModel!.bookingDate}&Status=$status&Phone=$phone';
       Response response = await Dio().get(urlInsertData);
       if (response.toString() == 'true') {
         Navigator.pop(context);
@@ -202,12 +219,10 @@ class _AddBookingState extends State<AddBooking> {
           Container(
             margin: EdgeInsets.only(right: 10.0, left: 10.0),
             height: 250.0,
-            child: Image(image: NetworkImage('${MyConstant.domain}${widget.userModel.imageTable}')),
+            child: Image(
+                image: NetworkImage(
+                    '${MyConstant.domain}${widget.userModel.imageTable}')),
           ),
-          SizedBox(
-            height: 20.0,
-          ),
-          chairPosition(),
           SizedBox(
             height: 20.0,
           ),
@@ -221,43 +236,43 @@ class _AddBookingState extends State<AddBooking> {
                   style: MyFont().white16,
                 ),
           SizedBox(
-            height: 20.0,
+            height: 10.0,
           ),
-          InkWell(
-            onTap: () async {
-              if (numberTable == null) {
-                MyDialog().failDialog(context, 'Oops', 'กรุณาเลือกที่นั่ง');
-              } else {
-                addTableUser();
-              }
-            },
-            child: Container(
-              width: 100.0,
-              decoration: BoxDecoration(
-                  border: Border.all(color: HexColor('1c1c1c')),
-                  borderRadius: BorderRadius.circular(10.0)),
-              child: Row(
-                children: [
-                  saveButton(),
-                  Text(
-                    'ยืนยัน',
-                    style: MyFont().white16,
-                  ),
-                ],
-              ),
-            ),
+          chairPosition(),
+          SizedBox(
+            height: 10.0,
           ),
+          btnConfirm(),
         ],
       ),
     );
   }
 
-  Widget saveButton() {
-    return IconButton(
-      icon: Icon(Icons.add_shopping_cart),
-      color: Colors.white,
-      iconSize: 25.0,
-      onPressed: () async {},
+  Widget btnConfirm() {
+    return ElevatedButton.icon(
+      onPressed: () {
+        if (numberTable == null) {
+          MyDialog().failDialog(context, 'Oops', 'กรุณาเลือกที่นั่ง');
+        } else {
+          addTableUser();
+        }
+      },
+      icon: Icon(
+        Icons.add_shopping_cart,
+        size: 25.0,
+        color: Colors.black,
+      ),
+      label: Text(
+        'จองร้านอาหาร',
+        style: MyFont().black16,
+      ),
+      style: ElevatedButton.styleFrom(
+        primary: MyConstant.light,
+        padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+        //textStyle: TextStyle(
+        //fontSize: 30,
+        //fontWeight: FontWeight.bold),
+      ),
     );
   }
 
@@ -267,12 +282,11 @@ class _AddBookingState extends State<AddBooking> {
       idUser = preferences.getString('id');
     });
     String url =
-        '${MyConstant.domain}/hangout/getTableWhereIdUser.php?isAdd=true&idUser=$idUser';
+        '${MyConstant.domain}/hangout/getTableWhereIdUserBeforeBooking.php?isAdd=true&idUser=$idUser';
     Response response = await Dio().get(url);
     var result = json.decode(response.data);
 
     if (result.toString() == 'null') {
-      //addTableUser();
     } else {
       Navigator.pop(context);
       MyDialog().failDialog(context, 'Sorry', 'จองได้ 1 โต๊ะต่อ 1 วัน');
@@ -289,7 +303,7 @@ class _AddBookingState extends State<AddBooking> {
       isReverse: true,
       selectedBackgroundColor:
           myList.contains('$number') ? Colors.white : MyConstant.primary,
-      selectedTextColor: Colors.white,
+      selectedTextColor: Colors.black,
       transitionType: TransitionType.LEFT_TO_RIGHT,
       textStyle: MyFont().white16,
       backgroundColor:
@@ -305,7 +319,6 @@ class _AddBookingState extends State<AddBooking> {
             status = !status;
             numberTable = number;
           });
-          //
         }
       },
     );
@@ -375,7 +388,10 @@ class _AddBookingState extends State<AddBooking> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Booking'),
+          title: Text(
+            'Booking',
+            style: MyFont().white,
+          ),
           systemOverlayStyle: SystemUiOverlayStyle.light,
           backgroundColor: MyConstant.primary,
         ),

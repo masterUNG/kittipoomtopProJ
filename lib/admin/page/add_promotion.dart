@@ -10,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:hangout/shared/constant.dart';
 import 'package:hangout/shared/font.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class AddPromotion extends StatefulWidget {
   const AddPromotion({Key? key}) : super(key: key);
@@ -25,6 +26,7 @@ class _AddPromotionState extends State<AddPromotion> {
   final ImagePicker _picker = ImagePicker();
   final formKey = GlobalKey<FormState>();
   String? imagePromotion, idStore, nameStore;
+  String? imageData, nameImage;
 
   TextEditingController promotionController = TextEditingController();
   TextEditingController priceController = TextEditingController();
@@ -217,7 +219,7 @@ class _AddPromotionState extends State<AddPromotion> {
           } else {}
         },
         child: Text(
-          'CONFIRM',
+          'ยืนยัน',
           style: MyFont().white,
         ),
         style: ElevatedButton.styleFrom(
@@ -236,6 +238,7 @@ class _AddPromotionState extends State<AddPromotion> {
 
       setState(() {
         image = File(_image!.path);
+        imageData = base64Encode(image!.readAsBytesSync());
         print('image ===> $_image');
       });
     } catch (e) {
@@ -244,23 +247,27 @@ class _AddPromotionState extends State<AddPromotion> {
   }
 
   Future<Null> addPromotion() async {
+    MyDialog().loadingDialog(context);
+
     Random random = Random();
     int i = random.nextInt(1000000);
-    String nameImage = 'promotion$i.jpg';
-    String url = '${MyConstant.domain}/hangout/saveImagePromotion.php';
+    setState(() {
+      nameImage = '${idStore}_promotion$i.jpg';
+    });
+    String apiUpload = '${MyConstant.domain}/hangout/saveImagePromotion.php';
 
     try {
-      Map<String, dynamic> map = Map();
+      var res = await http.post(Uri.parse(apiUpload), body: {
+        "data": imageData,
+        "nameImage": nameImage
+      }).then((value) => saveAdd());
+      var response = jsonDecode(res.body);
 
-      map['file'] = await MultipartFile.fromFile(image!.path,
-          filename: nameImage); //ชื่อตัวแปลต้องตรงกับ PHP
-
-      FormData formData = FormData.fromMap(map);
-      await Dio().post(url, data: formData).then((value) async {
-        imagePromotion = '/hangout/promotion/$nameImage';
-        print('imagePromotion = $imagePromotion');
-        saveAdd();
-      });
+      if (response["success"] == "true") {
+        print('Upload Success');
+      } else {
+        print('Upload failed');
+      }
     } catch (e) {}
   }
 
@@ -268,6 +275,8 @@ class _AddPromotionState extends State<AddPromotion> {
     String promotion = promotionController.text;
     String price = priceController.text;
     String detail = detailController.text;
+
+    String imagePromotion = "/hangout/promotion/$nameImage";
 
     String urlInsertData =
         '${MyConstant.domain}/hangout/addPromotion.php?isAdd=true&idStore=$idStore&NameStore=$nameStore&Promotion=$promotion&Price=$price&Detail=$detail&ImagePromotion=$imagePromotion';

@@ -65,51 +65,53 @@ class _UserNotificationState extends State<UserNotification> {
 
   Widget showListBooking() => ListView.builder(
         itemCount: tableModelUsers.length,
-        itemBuilder: (context, index) => Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              _divider(),
-              ListTile(
-                leading: IconButton(
-                  icon: Icon(Icons.audiotrack_outlined),
-                  color: Colors.amber,
-                  iconSize: 30.0,
-                  onPressed: () {},
-                ),
-                title: Text(
-                  'โต๊ะที่ ${tableModelUsers[index].numberTable}',
-                  style: MyFont().white16Bold,
-                ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start, //ทำให้ชิดริม
-                  children: [
-                    Text(
-                      'ร้าน ${tableModelUsers[index].nameStore}'
-                      '\nเวลาที่จอง ${tableModelUsers[index].dateTime}',
-                      style: MyFont().white16,
-                    ),
-                    Text(
-                      'กรุณามาก่อนเวลา 20:00 นะคะ',
-                      style: MyFont().grey16,
-                    )
-                  ],
-                ),
-                trailing: IconButton(
+        itemBuilder: (context, index) {
+          int reverseIndex = tableModelUsers.length - 1 - index;  //* เรียงข้อมูลกลับด้าน
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                ListTile(
+                  leading: IconButton(
+                    icon: Icon(Icons.audiotrack_outlined),
+                    color: Colors.amber,
+                    iconSize: 30.0,
+                    onPressed: () {},
+                  ),
+                  title: Text(
+                    'โต๊ะที่ ${tableModelUsers[reverseIndex].numberTable}',
+                    style: MyFont().white16Bold,
+                  ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start, //ทำให้ชิดริม
+                    children: [
+                      Text(
+                        'ร้าน ${tableModelUsers[reverseIndex].nameStore}'
+                        '\nวันที่ ${tableModelUsers[reverseIndex].bookingDate}',
+                        style: MyFont().white16,
+                      ),
+                      Text(
+                        'กรุณามาก่อนเวลา 20:00 นะคะ',
+                        style: MyFont().red16,
+                      )
+                    ],
+                  ),
+                  /*trailing: IconButton(
                   icon: Icon(Icons.check_circle),
                   color: tableModelUsers[index].checkIn == 'false'
                       ? Colors.grey
                       : Colors.green,
                   onPressed: () {},
+                ), */ //* Status
                 ),
-              ),
-              Divider(
-                height: 2,
-                color: Colors.grey.shade300,
-              )
-            ],
-          ),
-        ),
+                Divider(
+                  height: 2,
+                  color: Colors.grey.shade300,
+                )
+              ],
+            ),
+          );
+        },
       );
 
   Widget _noInfo(double size) {
@@ -123,7 +125,7 @@ class _UserNotificationState extends State<UserNotification> {
     );
   }
 
-  Widget _divider() {
+  Widget divider() {
     return Divider(
       color: Colors.grey,
       height: 1.0,
@@ -134,6 +136,13 @@ class _UserNotificationState extends State<UserNotification> {
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: MyConstant.primary,
+        title: Text(
+          'Notification',
+          style: MyFont().white,
+        ),
+      ),
       backgroundColor: MyConstant.primary,
       body: loadStatus
           ? ShowProgress()

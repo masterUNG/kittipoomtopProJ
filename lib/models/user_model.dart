@@ -176,4 +176,6 @@ class UserModel {
       token.hashCode ^
       favoriteCount.hashCode;
   }
+
+  contains(String value) {}
 }

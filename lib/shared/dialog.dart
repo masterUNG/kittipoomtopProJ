@@ -4,6 +4,7 @@ import 'package:hangout/shared/constant.dart';
 import 'package:hangout/shared/font.dart';
 
 class MyDialog {
+
   Future<Null> successDialog(
       BuildContext context, String title, String message) async {
     showDialog(
@@ -84,6 +85,40 @@ class MyDialog {
           }),
     );
   }
+
+  Future<Null> termsOfService(
+      BuildContext context, String title, String message) async {
+    showDialog(
+      context: context,
+      builder: (context) => SimpleDialog(
+        title: ListTile(
+          leading: Icon(
+            Icons.announcement,
+            color: Colors.black,
+            size: 50.0,
+          ),
+          title: Text(
+            title,
+            style: MyFont().black16Bold,
+          ),
+          subtitle: Text(
+            message,
+            style: MyFont().black16,
+          ),
+        ),
+        children: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'ยอมรับ',
+              style: MyFont().black16,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 
   
 }

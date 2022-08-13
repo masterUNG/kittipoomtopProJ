@@ -26,30 +26,23 @@ class _AddTableState extends State<AddTable> {
   DatePickerController _controller = DatePickerController();
   DateTime _selectedValue = DateTime.now();
 
-
   Widget _dateCalendar() {
-    setState(() {
-      String _dateTime = DateFormat('yyyy-MM-dd').format(_selectedValue);
-    _timeBooking = _dateTime;
-    });
     return Container(
       child: DatePicker(
         DateTime.now(),
         width: 60,
         height: 80,
         controller: _controller,
-        initialSelectedDate: DateTime.now(),
+        //initialSelectedDate: DateTime.now(),
         selectionColor: Colors.black,
         selectedTextColor: Colors.white,
-        inactiveDates: [
-          //DateTime.now().add(Duration(days: 3)),
-          //DateTime.now().add(Duration(days: 4)),
-          //DateTime.now().add(Duration(days: 7))
-        ],
         onDateChange: (date) {
           setState(() {
             _selectedValue = date;
+            String _dateTime = DateFormat('d MMMM y').format(_selectedValue);
+            _timeBooking = _dateTime;
           });
+          print(_timeBooking);
         },
       ),
     );
@@ -84,6 +77,22 @@ class _AddTableState extends State<AddTable> {
             SizedBox(
               height: 20.0,
             ),
+            _timeBooking == null ? _noContent() : _data() 
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _noContent() {
+    return Center(
+      child: Text('กรุณาเลือกวันที่',style: MyFont().black18,),
+    );
+  }
+
+  Widget _data() {
+    return Column(
+      children: [
             Column(
               children: [
                 Row(
@@ -94,7 +103,6 @@ class _AddTableState extends State<AddTable> {
                     btnChair(3, false),
                     btnChair(4, false),
                     btnChair(5, false),
-                    
                   ],
                 ),
                 Row(
@@ -146,9 +154,7 @@ class _AddTableState extends State<AddTable> {
             ),
             //_confirmBth(size),
             info(),
-          ],
-        ),
-      ),
+      ],
     );
   }
 
@@ -236,10 +242,9 @@ class _AddTableState extends State<AddTable> {
         backgroundColor: MyConstant.primary,
       ),
       body: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-        child: _content(),
-      ),
+          behavior: HitTestBehavior.opaque,
+          onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+          child: _content()),
     );
   }
 }

@@ -99,6 +99,14 @@ class MyFont {
     ),
   );
 
+  TextStyle grey14 = GoogleFonts.prompt(
+    textStyle: TextStyle(
+      color: Colors.grey,
+      fontSize: 14.0,
+      
+    ),
+  );
+
   TextStyle grey16 = GoogleFonts.prompt(
     textStyle: TextStyle(
       color: Colors.grey,
@@ -141,6 +149,14 @@ class MyFont {
       color: Colors.black,
       fontSize: 18.0,
       fontWeight: FontWeight.bold,
+    ),
+  );
+
+  TextStyle red16 = GoogleFonts.prompt(
+    textStyle: TextStyle(
+      color: Colors.red,
+      fontSize: 16.0,
+     
     ),
   );
 

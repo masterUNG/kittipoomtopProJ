@@ -1,18 +1,17 @@
 import 'dart:convert';
 import 'package:hangout/admin/page/add_image.dart';
-import 'package:hangout/shared/dialog.dart';
 import 'package:hangout/shared/font.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:hangout/admin/page/add_info.dart';
 import 'package:hangout/admin/page/edit_info.dart';
 import 'package:hangout/models/user_model.dart';
 import 'package:hangout/shared/constant.dart';
 import 'package:hangout/shared/show_progress.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+
 
 class AdminInfo extends StatefulWidget {
   const AdminInfo({Key? key}) : super(key: key);
@@ -46,7 +45,7 @@ class _AdminInfoState extends State<AdminInfo> {
       }
     });
 
-    print('Image : ${userModel!.imageTable}');
+    //print('Image : ${userModel!.imageTable}');
   }
 
   List<String> createUrl1() {
@@ -78,37 +77,6 @@ class _AdminInfoState extends State<AdminInfo> {
     );
   }
 
-  Widget _buildLogoutBtn(double size) {
-    return Container(
-      width: size / 2,
-      child: ElevatedButton(
-        onPressed: () async {
-          MyDialog().loadingDialog(context);
-          SharedPreferences preferences = await SharedPreferences.getInstance();
-          preferences.clear().then(
-                (value) => Navigator.pushNamedAndRemoveUntil(
-                    context, MyConstant.rountSignIn, (route) => false),
-              );
-        },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'LOGOUT',
-              style: MyFont().white,
-            ),
-            //Text(data)
-          ],
-        ),
-        style: ElevatedButton.styleFrom(
-            primary: MyConstant.dark,
-            fixedSize: Size(300, 50),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10))),
-      ),
-    );
-  }
-
   Widget _noInfo(double size) {
     return Container(
       child: Column(
@@ -117,21 +85,20 @@ class _AdminInfoState extends State<AdminInfo> {
         children: [
           Center(
             child: Text(
-              'กดเพื่อเพิ่มข้อมูล',
+              'กรุณาเพิ่มข้อมูล',
               style: MyFont().white18,
             ),
           ),
           SizedBox(
             height: 40.0,
           ),
-          _buildLogoutBtn(size),
+         
         ],
       ),
     );
   }
 
   Widget _haveInfo() {
-    double size = MediaQuery.of(context).size.width;
     return ListView(
       children: [
         Container(
@@ -244,7 +211,7 @@ class _AdminInfoState extends State<AdminInfo> {
               SizedBox(
                 height: 100.0,
               ),
-              _buildLogoutBtn(size),
+              //_buildLogoutBtn(size),
             ],
           ),
         ),
@@ -266,7 +233,7 @@ class _AdminInfoState extends State<AdminInfo> {
   void routeToAddInfo() {
     Widget widget;
     if (nameStore == null) {
-      widget = AddInfo();
+      widget = EditInfo(userModel: userModel!);
     } else {
       widget = EditInfo(userModel: userModel!);
     }
@@ -276,6 +243,7 @@ class _AdminInfoState extends State<AdminInfo> {
     Navigator.push(context, materialPageRoute)
         .then((value) => findInfo()); //อัปเดตหน้านี้ เวลามีการแก้ไข
   }
+  
 
   @override
   void initState() {
@@ -283,8 +251,11 @@ class _AdminInfoState extends State<AdminInfo> {
     super.initState();
   }
 
+  
+
   @override
   Widget build(BuildContext context) {
+    
     double size = MediaQuery.of(context).size.width;
     return Scaffold(
       body: _load

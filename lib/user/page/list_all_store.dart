@@ -17,7 +17,6 @@ class ListAllStore extends StatefulWidget {
 }
 
 class _ListAllStoreState extends State<ListAllStore> {
-  
   UserModel? userModel;
   List<UserModel> userModels = [];
   int index = 0;
@@ -30,7 +29,7 @@ class _ListAllStoreState extends State<ListAllStore> {
 
   Future<Null> readStore() async {
     //ดึงช้อมูลที่เป็นร้านอย่างเดียว
-    
+
     String url =
         '${MyConstant.domain}/hangout/getUserWhereChooseType.php?isAdd=true&chooseType=Store';
     await Dio().get(url).then((value) {
@@ -41,7 +40,9 @@ class _ListAllStoreState extends State<ListAllStore> {
         if (nameStore.isNotEmpty && verify == 'ยืนยัน') {
           setState(() {
             index++;
+            userModels.shuffle();
             userModels.add(userModel!);
+            
           });
         }
       }
@@ -172,7 +173,7 @@ class _ListAllStoreState extends State<ListAllStore> {
         backgroundColor: MyConstant.primary,
         title: Text(
           'ร้านทั้งหมด',
-          style: MyFont().white18,
+          style: MyFont().white,
         ),
       ),
       backgroundColor: MyConstant.primary,
@@ -186,7 +187,6 @@ class _ListAllStoreState extends State<ListAllStore> {
               itemBuilder: (context, index) {
                 return InkWell(
                   onTap: () {
-                    print('You Click index $index');
                     MaterialPageRoute route = MaterialPageRoute(
                         builder: (context) => DetailStore(
                               userModel: userModels[index],
@@ -204,7 +204,6 @@ class _ListAllStoreState extends State<ListAllStore> {
                       elevation: 8.0,
                       child: InkWell(
                         onTap: () {
-                          print('You Click index $index');
                           MaterialPageRoute route = MaterialPageRoute(
                               builder: (context) => DetailStore(
                                     userModel: userModels[index],
@@ -220,35 +219,31 @@ class _ListAllStoreState extends State<ListAllStore> {
                                 Image.network(createUrl1(context, index)),
                                 Container(
                                   margin: EdgeInsets.all(10.0),
-                                  child: Text(
-                                    userModels[index].nameStore,
-                                    style: MyFont().white18,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        userModels[index].nameStore,
+                                        style: MyFont().white18,
+                                      ),
+                                      Text(
+                                        'ให้โชว์ดาวตรงนี้',
+                                        style: MyFont().white12,
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
                             ),
                             Padding(
                               padding: const EdgeInsets.only(
-                                  left: 16, right: 16, bottom: 16),
+                                  left: 13, right: 16, bottom: 16),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        'ที่อยู่ : ${userModels[index].city}',
-                                        style: MyFont().grey18,
-                                      ),
-                                      Row(
-                                        children: [Text('ให้โชว์ดาวตรงนี้')],
-                                      ),
-                                    ],
-                                  ),
                                   Text(
-                                    userModels[index].bio,
-                                    overflow: TextOverflow.ellipsis,
+                                    'ที่อยู่ : ${userModels[index].city}',
                                     style: MyFont().grey18,
                                   ),
                                   Text(

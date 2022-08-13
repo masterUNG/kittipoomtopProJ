@@ -1,4 +1,0 @@
-#Mon Jun 06 16:13:13 ICT 2022
-base.0=/Users/topkittipoom/Developer/FlutterDev/myDream/hangout/build/app/intermediates/dex/debug/mergeDexDebug/classes.dex
-renamed.0=classes.dex
-path.0=classes.dex

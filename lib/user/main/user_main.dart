@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:hangout/shared/constant.dart';
 import 'package:hangout/shared/font.dart';
-import 'package:hangout/user/page/search_page.dart';
 import 'package:hangout/user/main/user_favorite.dart';
 import 'package:hangout/user/main/user_home.dart';
 import 'package:hangout/user/main/user_info.dart';
@@ -30,37 +28,6 @@ class _UserMainState extends State<UserMain> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: MyConstant.primary,
-        title: Text(
-          'hangout',
-          style: MyFont().white32,
-        ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.search),
-            color: Colors.white,
-            iconSize: 32.0,
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => SearchPage()));
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.favorite_border),
-            color: Colors.white,
-            iconSize: 32.0,
-            onPressed: () {
-              /*
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => FavoriteList())); */
-            },
-          ),
-        ],
-        elevation: 0,
-        titleSpacing: 12,
-        systemOverlayStyle: SystemUiOverlayStyle.light,
-      ),
       body: _screens[_currentIndex],
       backgroundColor: MyConstant.primary,
       bottomNavigationBar: BottomNavigationBar(

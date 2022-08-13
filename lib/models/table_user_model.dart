@@ -11,6 +11,7 @@ class TableModelUser {
   String dateTime;
   String bookingDate;
   String status;
+  String phone;
   TableModelUser({
     required this.id,
     required this.checkIn,
@@ -22,6 +23,7 @@ class TableModelUser {
     required this.dateTime,
     required this.bookingDate,
     required this.status,
+    required this.phone,
   });
 
   TableModelUser copyWith({
@@ -35,6 +37,7 @@ class TableModelUser {
     String? dateTime,
     String? bookingDate,
     String? status,
+    String? phone,
   }) {
     return TableModelUser(
       id: id ?? this.id,
@@ -47,6 +50,7 @@ class TableModelUser {
       dateTime: dateTime ?? this.dateTime,
       bookingDate: bookingDate ?? this.bookingDate,
       status: status ?? this.status,
+      phone: phone ?? this.phone,
     );
   }
 
@@ -62,6 +66,7 @@ class TableModelUser {
       'dateTime': dateTime,
       'bookingDate': bookingDate,
       'status': status,
+      'phone': phone,
     };
   }
 
@@ -77,6 +82,7 @@ class TableModelUser {
       dateTime: map['dateTime'] ?? '',
       bookingDate: map['bookingDate'] ?? '',
       status: map['status'] ?? '',
+      phone: map['phone'] ?? '',
     );
   }
 
@@ -86,7 +92,7 @@ class TableModelUser {
 
   @override
   String toString() {
-    return 'TableModelUser(id: $id, checkIn: $checkIn, idStore: $idStore, nameStore: $nameStore, numberTable: $numberTable, username: $username, idUser: $idUser, dateTime: $dateTime, bookingDate: $bookingDate, status: $status)';
+    return 'TableModelUser(id: $id, checkIn: $checkIn, idStore: $idStore, nameStore: $nameStore, numberTable: $numberTable, username: $username, idUser: $idUser, dateTime: $dateTime, bookingDate: $bookingDate, status: $status, phone: $phone)';
   }
 
   @override
@@ -103,7 +109,8 @@ class TableModelUser {
       other.idUser == idUser &&
       other.dateTime == dateTime &&
       other.bookingDate == bookingDate &&
-      other.status == status;
+      other.status == status &&
+      other.phone == phone;
   }
 
   @override
@@ -117,6 +124,7 @@ class TableModelUser {
       idUser.hashCode ^
       dateTime.hashCode ^
       bookingDate.hashCode ^
-      status.hashCode;
+      status.hashCode ^
+      phone.hashCode;
   }
 }

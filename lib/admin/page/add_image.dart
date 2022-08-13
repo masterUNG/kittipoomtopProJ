@@ -22,7 +22,7 @@ class AddImage extends StatefulWidget {
 class _AddImageState extends State<AddImage> {
   UserModel? userModel;
 
-  String? imageTable, nameStore, address, phone, imageUrl, bio;
+  String? imageTable, nameStore, address, phone, imageUrl, bio, city;
 
   final ImagePicker _picker = ImagePicker();
 
@@ -47,6 +47,7 @@ class _AddImageState extends State<AddImage> {
           userModel = UserModel.fromMap(item);
           nameStore = userModel!.nameStore;
           address = userModel!.address;
+          city = userModel!.city;
           phone = userModel!.phone;
           imageUrl = userModel!.imageUrl;
           imageTable = userModel!.imageTable;
@@ -59,7 +60,6 @@ class _AddImageState extends State<AddImage> {
   }
 
   Future<void> chooseImage(ImageSource imageSource) async {
-
     try {
       XFile? file = await _picker.pickImage(
           source: imageSource, maxHeight: 800.0, maxWidth: 800.0);
@@ -83,9 +83,9 @@ class _AddImageState extends State<AddImage> {
     String apiUpload = '${MyConstant.domain}/hangout/saveImageTable.php';
 
     int i = Random().nextInt(100000);
-    String nameLayout = 'layout$i.jpg';
+    String nameLayout = '${id}_layout$i.jpg';
     String pathUrl = "/hangout/layout/$nameLayout";
-    
+
     try {
       var res = await http.post(Uri.parse(apiUpload),
           body: {"data": imageData, "nameImage": nameLayout});
@@ -101,7 +101,7 @@ class _AddImageState extends State<AddImage> {
     }
 
     String url =
-        '${MyConstant.domain}/hangout/editUserWhereId.php?isAdd=true&id=$id&NameStore=$nameStore&Address=$address&Bio=$bio&Phone=$phone&ImageUrl=$imageUrl&ImageTable=$pathUrl';
+        '${MyConstant.domain}/hangout/editUserWhereId.php?isAdd=true&id=$id&NameStore=$nameStore&City=$city&Bio=$bio&Phone=$phone&ImageUrl=$imageUrl&ImageTable=$pathUrl';
     Response response = await Dio().get(url);
     if (response.toString() == 'true') {
       Navigator.pop(context);

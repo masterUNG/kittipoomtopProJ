@@ -31,11 +31,27 @@ dependencies:
   http: ^0.13.4
   flutter_animated_button: ^2.0.0
   path: ^1.8.0
-  
+  flutter_launcher_icons: ^0.9.3
+  crypto: ^3.0.2
+  mongo_dart: ^0.7.4+1
+  toast: ^0.3.0
+  flutter_native_splash: ^2.0.1+1
+
+flutter_native_splash:
+   image: assets/images/icon.png
+   color: "#000000"
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/icon.png"
+  
 
 
 flutter:
@@ -45,5 +61,4 @@ flutter:
    assets:
     - assets/images/
     - assets/icons/
-
   
