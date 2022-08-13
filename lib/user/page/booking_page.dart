@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:hangout/shared/constant.dart';
 import 'package:hangout/shared/dialog.dart';
 import 'package:hangout/shared/font.dart';
+import 'package:hangout/shared/my_process.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -197,8 +198,19 @@ class _AddBookingState extends State<AddBooking> {
       if (response.toString() == 'true') {
         Navigator.pop(context);
         //notificationToStore(idStore);
-        MyDialog().successDialog(
-            context, 'Successfully !!', 'จองโต๊ะ $numberTable สำเร็จ');
+        MyDialog()
+            .successDialog(
+                context, 'Successfully !!', 'จองโต๊ะ $numberTable สำเร็จ')
+            .then((value) async {
+          String idShop = widget.userModel.id;
+
+          await MyProcess(context: context).sendNotification(
+              title: 'มีการจองโต๊ะ',
+              body: 'จองโต๊ะ $numberTable จากลูกค้า',
+              token: widget.userModel.token);
+
+          // print('##13aug จองโต๊ะ $numberTable สำเร็จ at shop ==> $idShop');
+        });
         deleteNumber();
       } else {
         MyDialog().failDialog(context, 'Oops', 'กรุณาลองใหม่อีกครั้งค่ะ');

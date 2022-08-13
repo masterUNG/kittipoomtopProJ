@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hangout/admin/main/admin_events.dart';
@@ -11,6 +12,7 @@ import 'package:hangout/admin/page/about_booking.dart';
 import 'package:hangout/shared/constant.dart';
 import 'package:hangout/shared/dialog.dart';
 import 'package:hangout/shared/font.dart';
+import 'package:hangout/shared/my_process.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../models/user_model.dart';
 
@@ -182,6 +184,16 @@ class _AdminMainState extends State<AdminMain> {
   void initState() {
     findInfo();
     super.initState();
+    callSetupMessage();
+  }
+
+  Future<void> callSetupMessage() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String? idUserLogin = sharedPreferences.getString('id');
+
+    if (idUserLogin != null) {
+      await MyProcess(context: context).setupMessaging(idUserLogin: idUserLogin);
+    }
   }
 
   @override

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:hangout/shared/constant.dart';
 import 'package:hangout/shared/font.dart';
+import 'package:hangout/shared/my_process.dart';
 import 'package:hangout/user/main/user_favorite.dart';
 import 'package:hangout/user/main/user_home.dart';
 import 'package:hangout/user/main/user_info.dart';
 import 'package:hangout/user/main/user_notification.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserMain extends StatefulWidget {
   const UserMain({Key? key}) : super(key: key);
@@ -24,6 +26,21 @@ class _UserMainState extends State<UserMain> {
   int _currentIndex = 0;
 
   Widget currentWidget = UserHome();
+
+  @override
+  void initState() {
+    super.initState();
+    callSetupMessage();
+  }
+
+  Future<void> callSetupMessage() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String? idUserLogin = preferences.getString('id');
+    if (idUserLogin != null) {
+      await MyProcess(context: context)
+          .setupMessaging(idUserLogin: idUserLogin);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

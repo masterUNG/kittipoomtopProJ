@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:hangout/admin/main/admin_main.dart';
@@ -28,14 +29,19 @@ final Map<String, WidgetBuilder> map = {
 String? initialRoute;
 
 Future<void> main() async {
-
   //Splash Screen
   FlutterNativeSplash.remove();
-
 
   //Auto login ถ้าเคย login แล้ว
 
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp().then((value) {
+    print('##13aug firebase initial Success');
+  }).catchError((value) {
+    print('##13aug error firebase initial ==> ${value.toString()}');
+  });
+
   SharedPreferences preferences = await SharedPreferences.getInstance();
   String? type = preferences.getString('type'); //ดึงค่า type  ออกมา
   //await MongoDatabase.connect();
@@ -60,7 +66,6 @@ Future<void> main() async {
     }
   }
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);

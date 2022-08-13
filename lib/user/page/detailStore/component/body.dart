@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:hangout/mongoDB/models/favoriteModels.dart';
 import 'package:hangout/mongoDB/mongodb.dart';
 import 'package:hangout/shared/constant.dart';
@@ -10,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:hangout/models/user_model.dart';
 import 'package:hangout/shared/font.dart';
 import 'package:hangout/shared/show_progress.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:mongo_dart/mongo_dart.dart' as M;
 
 class Body extends StatefulWidget {
@@ -30,17 +34,33 @@ class _BodyState extends State<Body> {
   void initState() {
     super.initState();
     userModel = widget.userModel;
+    print('##13aug userModel at body.dart ==> ${userModel!.toMap()}');
+    findUserLogin();
+  }
+
+  Future<void> findUserLogin() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String? idUserLogin = preferences.getString('id');
+    String path =
+        'http://hangoutwithyou.com/hangout/getUserWhereId.php?isAdd=true&id=$idUserLogin';
+    await Dio().get(path).then((value) {
+      for (var element in json.decode(value.data)) {
+        print('##13aug element ===> $element');
+      }
+    });
   }
 
   Future<void> insertFav() async {
-    final data = FavModels(
-        idStore: '${widget.userModel.id}',
-        listIdUser: '',
-        nameStore: '${widget.userModel.nameStore}');
+    print('##13aug insertFav Wrok');
 
-    var result = await MongoDatabase.insert(data);
+    // final data = FavModels(
+    //     idStore: '${widget.userModel.id}',
+    //     listIdUser: '',
+    //     nameStore: '${widget.userModel.nameStore}');
 
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result)));
+    // var result = await MongoDatabase.insert(data);
+
+    // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result)));
   }
 
   List<String> createUrl1() {
@@ -334,9 +354,9 @@ class _BodyState extends State<Body> {
                   height: 40.0,
                 ),
                 Align(
-                    alignment: FractionalOffset.bottomCenter,
-                    child: btnBooking(),
-                  ),
+                  alignment: FractionalOffset.bottomCenter,
+                  child: btnBooking(),
+                ),
               ],
             ),
           ),

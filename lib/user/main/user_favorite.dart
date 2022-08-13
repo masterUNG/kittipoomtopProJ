@@ -22,7 +22,7 @@ class _UserFavoriteState extends State<UserFavorite> {
       ),
       backgroundColor: MyConstant.primary,
       body: Center(
-        child: Text('Comming Soon',style: MyFont().white16,),
+        child: Text('Comming Soon 123',style: MyFont().white16,),
       ),
     );
   }
