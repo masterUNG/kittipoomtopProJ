@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "/Users/chaiwootphrombutr/WorkSpace/FlutterConsult/kittipoomtopProJ/build/image_picker_android/intermediates/res/merged/debug/drawable/notification_bg.xml",
+        "source": "/Users/chaiwootphrombutr/.gradle/caches/transforms-2/files-2.1/8e86e615f21ac3758e97e94e18045107/core-1.8.0/res/drawable/notification_bg.xml"
+    },
+    {
+        "merged": "/Users/chaiwootphrombutr/WorkSpace/FlutterConsult/kittipoomtopProJ/build/image_picker_android/intermediates/res/merged/debug/drawable/notification_icon_background.xml",
+        "source": "/Users/chaiwootphrombutr/.gradle/caches/transforms-2/files-2.1/8e86e615f21ac3758e97e94e18045107/core-1.8.0/res/drawable/notification_icon_background.xml"
+    },
+    {
+        "merged": "/Users/chaiwootphrombutr/WorkSpace/FlutterConsult/kittipoomtopProJ/build/image_picker_android/intermediates/res/merged/debug/drawable/notification_bg_low.xml",
+        "source": "/Users/chaiwootphrombutr/.gradle/caches/transforms-2/files-2.1/8e86e615f21ac3758e97e94e18045107/core-1.8.0/res/drawable/notification_bg_low.xml"
+    },
+    {
+        "merged": "/Users/chaiwootphrombutr/WorkSpace/FlutterConsult/kittipoomtopProJ/build/image_picker_android/intermediates/res/merged/debug/drawable/notification_tile_bg.xml",
+        "source": "/Users/chaiwootphrombutr/.gradle/caches/transforms-2/files-2.1/8e86e615f21ac3758e97e94e18045107/core-1.8.0/res/drawable/notification_tile_bg.xml"
+    }
+]
