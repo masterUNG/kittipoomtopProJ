@@ -19,6 +19,7 @@ class DetailStore extends StatefulWidget {
 
 class _DetailStoreState extends State<DetailStore> {
   UserModel? userModel;
+  
   List<UserModel> userModels = [];
 
   @override

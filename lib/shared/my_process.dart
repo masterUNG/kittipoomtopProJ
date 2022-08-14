@@ -1,7 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:hangout/models/user_model.dart';
 import 'package:hangout/shared/dialog.dart';
 
 class MyProcess {
@@ -9,6 +12,28 @@ class MyProcess {
   MyProcess({
     required this.context,
   });
+
+  Future<UserModel?> findUserModel({required String id}) async {
+    UserModel userModel;
+    String path =
+        'http://hangoutwithyou.com/hangout/getUserWhereId.php?isAdd=true&id=$id';
+    var result = await Dio().get(path);
+    print('##14aug id = $id result ===> $result');
+    for (var element in json.decode(result.data)) {
+      userModel = UserModel.fromMap(element);
+      return userModel;
+    }
+    return null;
+  }
+
+  Future<void> processEditFavorityIdBuyer(
+      {required String idShop, required String favIdBuyer}) async {
+    String path =
+        'http://hangoutwithyou.com/hangout/editFavoriteWhereId.php?isAdd=true&id=$idShop&favIdBuyer=$favIdBuyer';
+    await Dio().get(path).then((value) {
+      print('##14aug edit favotiry Success');
+    });
+  }
 
   Future<void> sendNotification(
       {required String title,

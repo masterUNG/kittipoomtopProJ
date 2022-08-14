@@ -18,7 +18,7 @@ class UserModel {
   final String imageUrl;
   final String imageTable;
   final String token;
-  final String idShops;
+  final String favIdBuyer;
   UserModel({
     required this.id,
     required this.verify,
@@ -36,7 +36,7 @@ class UserModel {
     required this.imageUrl,
     required this.imageTable,
     required this.token,
-    required this.idShops,
+    required this.favIdBuyer,
   });
 
   Map<String, dynamic> toMap() {
@@ -57,7 +57,7 @@ class UserModel {
       'imageUrl': imageUrl,
       'imageTable': imageTable,
       'token': token,
-      'idShops': idShops,
+      'favIdBuyer': favIdBuyer,
     };
   }
 
@@ -79,7 +79,7 @@ class UserModel {
       imageUrl: (map['imageUrl'] ?? '') as String,
       imageTable: (map['imageTable'] ?? '') as String,
       token: (map['token'] ?? '') as String,
-      idShops: (map['idShops'] ?? '') as String,
+      favIdBuyer: (map['favIdBuyer'] ?? '0') as String,
     );
   }
 

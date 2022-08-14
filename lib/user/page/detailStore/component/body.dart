@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:hangout/mongoDB/models/favoriteModels.dart';
-import 'package:hangout/mongoDB/mongodb.dart';
+import 'package:hangout/models/favorite_model.dart';
 import 'package:hangout/shared/constant.dart';
+import 'package:hangout/shared/my_process.dart';
 import 'package:hangout/user/page/booking_page.dart';
 import 'package:hangout/user/page/event_store.dart';
 import 'package:hangout/user/page/promotion_store.dart';
@@ -19,7 +19,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 class Body extends StatefulWidget {
   final UserModel userModel;
 
-  const Body({Key? key, required this.userModel}) : super(key: key);
+  const Body({
+    Key? key,
+    required this.userModel,
+  }) : super(key: key);
 
   @override
   _BodyState createState() => _BodyState();
@@ -28,39 +31,134 @@ class Body extends StatefulWidget {
 UserModel? userModel;
 List<UserModel> userModels = [];
 int activeIndex = 0;
+bool? showFavority; // false ==> unFavority
+String? idUserLogin;
+var favorityIdBuyers = <String>[];
 
 class _BodyState extends State<Body> {
   @override
   void initState() {
     super.initState();
     userModel = widget.userModel;
-    print('##13aug userModel at body.dart ==> ${userModel!.toMap()}');
-    findUserLogin();
+    print('##14aug userModel ของร้าน at body.dart ==> ${userModel!.toMap()}');
+    checkFavority();
   }
 
-  Future<void> findUserLogin() async {
+  Future<void> checkFavority() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    String? idUserLogin = preferences.getString('id');
+    idUserLogin = preferences.getString('id');
+
+    showFavority = false;
+
+    String result = userModel!.favIdBuyer;
+    print('##14aug result ====> $result, showFavority ก่อน ==> $showFavority');
+    if (result != '0') {
+      result = result.substring(1, result.length - 1);
+      favorityIdBuyers = result.split(',');
+      for (var i = 0; i < favorityIdBuyers.length; i++) {
+        favorityIdBuyers[i] = favorityIdBuyers[i].trim();
+        if (idUserLogin == favorityIdBuyers[i]) {
+          showFavority = true;
+        }
+      }
+      print('##14aug showFavority หลัง ===>> $showFavority');
+      setState(() {});
+    }
+    setState(() {});
+  }
+
+  Future<void> findUserModelShop({required String idShop}) async {
     String path =
-        'http://hangoutwithyou.com/hangout/getUserWhereId.php?isAdd=true&id=$idUserLogin';
+        'http://hangoutwithyou.com/hangout/getUserWhereId.php?isAdd=true&id=$idShop';
     await Dio().get(path).then((value) {
       for (var element in json.decode(value.data)) {
-        print('##13aug element ===> $element');
+        userModel = UserModel.fromMap(element);
       }
     });
   }
 
   Future<void> insertFav() async {
-    print('##13aug insertFav Wrok');
+    print(
+        '##14aug insertFav Wrok 123 idShop ==> ${userModel!.id}, showFavority ==> $showFavority, favorityIdBuyers ==> $favorityIdBuyers');
 
-    // final data = FavModels(
-    //     idStore: '${widget.userModel.id}',
-    //     listIdUser: '',
-    //     nameStore: '${widget.userModel.nameStore}');
+    if (showFavority!) {
+      // delete iduserlogin from Database
+      print('##14aug  ก่อน favorityIdBuyers ==> $favorityIdBuyers');
+      favorityIdBuyers.remove(idUserLogin);
+      print('##14aug  หลัง favorityIdBuyers ==> $favorityIdBuyers');
+      await MyProcess(context: context)
+          .processEditFavorityIdBuyer(
+              idShop: userModel!.id, favIdBuyer: favorityIdBuyers.toString())
+          .then((value) async {
+        await findUserModelShop(idShop: userModel!.id).then((value) {
+          checkFavority();
+        });
+      });
+    } else {
+      //เช็คว่า จะ Insert หรือ Edit ที่ FavoriteTable
+      String urlCheckInserOrEdit =
+          'http://hangoutwithyou.com/hangout/getUserWhereIdFormFav.php?isAdd=true&idBuyer=$idUserLogin';
+      await Dio().get(urlCheckInserOrEdit).then((value) async {
+        if (value.toString() == 'null') {
+          // ใหม่เอียม ยังไม่เคย Favorite ใคร จะใช้ Insert
 
-    // var result = await MongoDatabase.insert(data);
+          var idShops = <String>[];
+          idShops.add(userModel!.id);
 
-    // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result)));
+          String urlInsertFavorite =
+              'http://hangoutwithyou.com/hangout/addFav.php?isAdd=true&idBuyer=$idUserLogin&idStore=${idShops.toString()}';
+          await Dio().get(urlInsertFavorite).then((value) {
+            print('##14aug insert Favorite Success');
+          });
+        } else {
+          // มีข้อมูลอยู่แล้ว ให้ Edit แทน
+          print('##14aug มีข้อมูลอยู่แล้ว ให้ Edit แทน');
+
+          for (var element in json.decode(value.data)) {
+            FavoriteModel favoriteModel = FavoriteModel.fromMap(element);
+            String string = favoriteModel.idStore;
+            string = string.substring(1, string.length - 1);
+            var strings = string.split(',');
+            for (var i = 0; i < strings.length; i++) {
+              strings[i] = strings[i].trim();
+            }
+            strings.add(userModel!.id);
+
+            String urlEditFavorite =
+                'http://hangoutwithyou.com/hangout/editFavWhereId.php?isAdd=true&idBuyer=$idUserLogin&idStore=${strings.toString()}';
+            await Dio().get(urlEditFavorite).then((value) {
+              print('##14aug insert Favorite Success');
+            });
+          }
+        }
+      });
+
+      if (favorityIdBuyers.isEmpty) {
+        // form 0
+
+        favorityIdBuyers.add(idUserLogin!);
+        await MyProcess(context: context)
+            .processEditFavorityIdBuyer(
+                idShop: userModel!.id, favIdBuyer: favorityIdBuyers.toString())
+            .then((value) async {
+          await findUserModelShop(idShop: userModel!.id).then((value) {
+            checkFavority();
+          });
+        });
+      } else {
+        // มีค่าของคนอื่นอยู่แล้ว
+        print('##14aug favorityIdBuyer ปัจุบัน ==> $favorityIdBuyers');
+        favorityIdBuyers.add(idUserLogin!);
+        await MyProcess(context: context)
+            .processEditFavorityIdBuyer(
+                idShop: userModel!.id, favIdBuyer: favorityIdBuyers.toString())
+            .then((value) async {
+          await findUserModelShop(idShop: userModel!.id).then((value) {
+            checkFavority();
+          });
+        });
+      }
+    }
   }
 
   List<String> createUrl1() {
@@ -240,7 +338,9 @@ class _BodyState extends State<Body> {
                       //*Favorite
                       children: [
                         IconButton(
-                          icon: Icon(Icons.favorite_border),
+                          icon: Icon(showFavority ?? false
+                              ? Icons.favorite
+                              : Icons.favorite_border),
                           iconSize: 40.0,
                           color: MyConstant.light,
                           onPressed: () async {
